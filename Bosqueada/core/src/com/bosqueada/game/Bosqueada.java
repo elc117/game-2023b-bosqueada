@@ -7,25 +7,35 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 public class Bosqueada extends ApplicationAdapter {
 	SpriteBatch batch;
-	Texture img_fundo;
+	Texture cenario1;
+	Texture interroga;
+	double randomNumber = Math.random();
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		img_fundo = new Texture("cenario1.jpg");
+		cenario1 = new Texture("cenario1.jpg");
+		interroga = new Texture("interrogacao_florestal.jpg");
 	}
 
 	@Override
 	public void render () {
 		ScreenUtils.clear(1, 0, 0, 1);
 		batch.begin();
-		batch.draw(img_fundo, 0, 0);
+
+		batch.draw(cenario1, 0, 0);
+		batch.draw(interroga, 0, 0);
+		
+
 		batch.end();
 	}
 	
 	@Override
 	public void dispose () {
 		batch.dispose();
-		img_fundo.dispose();
+		cenario1.dispose();
+		interroga.dispose();
 	}
+
+
 }
