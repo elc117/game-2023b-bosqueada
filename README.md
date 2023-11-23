@@ -1,1 +1,7 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/TUsa8_pI)
+# Bosqueada
+
+## Mini Progresso Print
+![Erro ao carregar a imagem](Bosqueada/assets/prints/Icone+cenario1.png)
+
+### Ideia
+   Adicionar perguntas no cenário, caso elas sejam respondidas corretamente o jogador recebe moedas e, com as moedas recebidas, ele poderá ir para o proximo cenário, onde terá que enfrentar novas perguntas.
