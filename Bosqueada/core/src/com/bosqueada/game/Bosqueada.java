@@ -9,7 +9,6 @@ public class Bosqueada extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture cenario1;
 	Texture interroga;
-	double randomNumber = Math.random();
 	
 	@Override
 	public void create () {
