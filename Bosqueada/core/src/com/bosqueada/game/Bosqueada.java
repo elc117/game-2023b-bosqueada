@@ -8,13 +8,11 @@ import com.badlogic.gdx.utils.ScreenUtils;
 public class Bosqueada extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture cenario1;
-	Texture interroga;
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		cenario1 = new Texture("cenario1.jpg");
-		interroga = new Texture("interrogacao_florestal.jpg");
+		cenario1 = new Texture("cenario1-pixelicious.png");
 	}
 
 	@Override
@@ -23,7 +21,6 @@ public class Bosqueada extends ApplicationAdapter {
 		batch.begin();
 
 		batch.draw(cenario1, 0, 0);
-		batch.draw(interroga, 0, 0);
 		
 
 		batch.end();
@@ -33,7 +30,6 @@ public class Bosqueada extends ApplicationAdapter {
 	public void dispose () {
 		batch.dispose();
 		cenario1.dispose();
-		interroga.dispose();
 	}
 
 
