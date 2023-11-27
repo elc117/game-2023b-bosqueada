@@ -12,9 +12,13 @@ import com.badlogic.gdx.utils.ScreenUtils;
 public class Bosqueada extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture chao;
-	Texture jacare_testura;
+	Texture jacare_textura;
+	Texture background2;
+	Texture pedraTextura;
 	Sprite jacare_fofao;
-	float posX, posY;
+	Sprite pedra;
+	private float posX, posY;
+
 
 	// Defina a cor azul bebê (um tom suave de azul)
 	Color babyBlue = new Color(0.678f, 0.847f, 0.902f, 1f);
@@ -25,16 +29,25 @@ public class Bosqueada extends ApplicationAdapter {
 		batch = new SpriteBatch();
 
 		// textura do personagem
-		jacare_testura = new Texture("jacarefofao.png");
+		jacare_textura = new Texture("jacare.png");
 
 		// textura das arvores de fundo
-		chao = new Texture("chao_floresta_recortado.png");
+		chao = new Texture("background2.jpg");
+
+		// textura pedra
+		pedraTextura = new Texture("pedra.png");
 
 		// criando o jacare fofao com a textura
-		jacare_fofao = new Sprite(jacare_testura);
+		jacare_fofao = new Sprite(jacare_textura);
+
+		// criando pedra
+		pedra = new Sprite(pedraTextura);
+
+		// posicao inicial pedra para teste tamanho
+		pedra.setPosition(0, 0);
 
 		// definindo a posicao inicial
-		jacare_fofao.setPosition(0, 0);
+		jacare_fofao.setPosition(0, 20);
 
 	}
 
@@ -56,6 +69,7 @@ public class Bosqueada extends ApplicationAdapter {
 		batch.begin();
 
 		batch.draw(chao, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		batch.draw(pedra, 20, 600);
 
 		jacare_fofao.draw(batch);
 
@@ -67,6 +81,10 @@ public class Bosqueada extends ApplicationAdapter {
 		batch.dispose();
 		chao.dispose();
 		jacare_fofao.getTexture().dispose();
+	}
+
+	private void moveJacare(){
+
 	}
 
 
