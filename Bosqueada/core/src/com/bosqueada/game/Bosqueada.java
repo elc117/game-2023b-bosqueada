@@ -47,7 +47,7 @@ public class Bosqueada extends ApplicationAdapter {
 		pedra.setPosition(0, 0);
 
 		// definindo a posicao inicial
-		jacare_fofao.setPosition(0, Gdx.graphics.getHeight()/6);
+		jacare_fofao.setPosition(0, Gdx.graphics.getWidth()/10);
 
 	}
 
@@ -76,7 +76,16 @@ public class Bosqueada extends ApplicationAdapter {
 				virado_esquerda = false;
 			}
         }
+		
+		// checa se o jacaras passou do ponto pra direita e bota ele na esquerda
+		if (jacare_fofao.getX() > 1240){
+			jacare_fofao.setPosition(-75, Gdx.graphics.getWidth()/10);
+		}
 
+		// checa se o jacas passou do ponto pra esquerda e bota ele na direita
+		if (jacare_fofao.getX() < -75){
+			jacare_fofao.setPosition( 1240, Gdx.graphics.getWidth()/10);
+		}
 
 		batch.begin();
 
