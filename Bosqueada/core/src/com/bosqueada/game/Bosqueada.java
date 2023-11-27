@@ -8,6 +8,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
+import java.util.Iterator;
 
 public class Bosqueada extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -16,7 +21,8 @@ public class Bosqueada extends ApplicationAdapter {
 	Texture background2;
 	Texture pedraTextura;
 	Sprite jacare_fofao;
-	Sprite pedra;
+	private Array<Rectangle> pedras;
+	private long tempoPedra;
 
 	boolean virado_esquerda = true;
 
@@ -42,11 +48,11 @@ public class Bosqueada extends ApplicationAdapter {
 		// criando o jacare fofao com a textura
 		jacare_fofao = new Sprite(jacare_textura);
 
-		// criando pedra
-		pedra = new Sprite(pedraTextura);
 
-		// posicao inicial pedra para teste tamanho
-		pedra.setPosition(0, 0);
+		pedras = new Array<Rectangle>();
+
+		tempoPedra = 0;
+
 
 		// definindo a posicao inicial
 		jacare_fofao.setPosition(0, Gdx.graphics.getWidth()/10);
@@ -57,11 +63,12 @@ public class Bosqueada extends ApplicationAdapter {
 	public void render () {
 		ScreenUtils.clear(babyBlue);
 		boolean caminhando = false;
-		
+
+		this.movePedras();
 
 		// Movimenta a sprite do personagem para a esquerda quando a tecla seta esquerda é pressionada
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            jacare_fofao.setX(jacare_fofao.getX() - 10);
+            jacare_fofao.setX(jacare_fofao.getX() - 5);
 			caminhando = true;
 
 			// se estiver virado pra direita, vira pra esquerda
@@ -89,7 +96,7 @@ public class Bosqueada extends ApplicationAdapter {
 
         // Movimenta a sprite do personagem para a direita quando a tecla seta direita é pressionada
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            jacare_fofao.setX(jacare_fofao.getX() + 10);
+            jacare_fofao.setX(jacare_fofao.getX() + 5);
 			caminhando = true;
 			
 			// se estiver virado pra esquerda, vira pra direita
@@ -112,6 +119,7 @@ public class Bosqueada extends ApplicationAdapter {
 					contador_auxiliar_caminhada = 0;
 				}
 			}
+
         }
 		
 		//////////////////////////////////////////////////////////////////////////////////////
@@ -132,11 +140,15 @@ public class Bosqueada extends ApplicationAdapter {
 
 		batch.draw(chao, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-		batch.draw(pedra, 20, 600);
-
 		jacare_fofao.draw(batch);
 
+		for(Rectangle pedra : pedras){
+		  batch.draw(pedraTextura, pedra.x, pedra.y);
+
+		}
+
 		batch.end();
+		
 	}
 	
 	@Override
@@ -146,6 +158,25 @@ public class Bosqueada extends ApplicationAdapter {
 		jacare_fofao.getTexture().dispose();
 	}
 
+	private void spawnPedras(){
+		Rectangle pedra = new Rectangle(MathUtils.random(0, Gdx.graphics.getWidth() - pedraTextura.getWidth()), 700, pedraTextura.getWidth(), pedraTextura.getHeight());
+		pedras.add(pedra);
+		tempoPedra = TimeUtils.nanoTime();
+	}
+
+	private void movePedras(){
+		if( TimeUtils.nanoTime() - tempoPedra > 469999999){
+		this.spawnPedras();
+		}
+
+		for( Iterator<Rectangle> iter = pedras.iterator(); iter.hasNext(); ){
+			Rectangle pedra = iter.next();
+			pedra.y -= 375 * Gdx.graphics.getDeltaTime();
+			if(pedra.y < 100){
+				iter.remove();
+			}
+		}
+	}
 
 
 }
