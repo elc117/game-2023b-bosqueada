@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -56,7 +55,7 @@ public class Bosqueada extends ApplicationAdapter {
 		// Inicialize as pedras com diferentes posições e velocidades
         for (int i = 0; i < pedras_quantidade; i++) {
             float x = MathUtils.random(0, 1280);
-            float y = Gdx.graphics.getHeight() + MathUtils.random(640, 2000);
+			float y = Gdx.graphics.getHeight() + MathUtils.random(640, 2000);
             float velocidade = MathUtils.random(15, 30);
 
             pedras[i] = new Pedra(pedra_textura, x, y, velocidade);
@@ -87,18 +86,15 @@ public class Bosqueada extends ApplicationAdapter {
 
 		batch.begin();
 
+		batch.draw(chao, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+		jacare_fofao.draw(batch);
 
 		// Atualiza e desenha as pedras
         for (Pedra pedra : pedras) {
             pedra.atualizar(deltaTime);
             pedra.desenhar(batch);
         }
-
-		batch.draw(chao, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-		
-
-		jacare_fofao.draw(batch);
 
 		batch.end();
 	}
@@ -130,15 +126,15 @@ public class Bosqueada extends ApplicationAdapter {
 
 			// movimento da caminhada do jaca
 			if(caminhando == true){
-				if(contador_auxiliar_caminhada < 3){
+				if(contador_auxiliar_caminhada < 4){
 					jacare_fofao.setY(jacare_fofao.getY() - 1);
 					contador_auxiliar_caminhada += 1;
 				}
-				if(contador_auxiliar_caminhada >= 3){
+				if(contador_auxiliar_caminhada >= 4){
 					jacare_fofao.setY(jacare_fofao.getY() + 1);
 					contador_auxiliar_caminhada += 1;
 				}
-				if(contador_auxiliar_caminhada == 6){
+				if(contador_auxiliar_caminhada == 8){
 					contador_auxiliar_caminhada = 0;
 				}
 			}
@@ -158,15 +154,15 @@ public class Bosqueada extends ApplicationAdapter {
 
 			// movimento da caminhada do jaca
 			if(caminhando == true){
-				if(contador_auxiliar_caminhada < 3){
+				if(contador_auxiliar_caminhada < 4){
 					jacare_fofao.setY(jacare_fofao.getY() - 1);
 					contador_auxiliar_caminhada += 1;
 				}
-				if(contador_auxiliar_caminhada >= 3){
+				if(contador_auxiliar_caminhada >= 4){
 					jacare_fofao.setY(jacare_fofao.getY() + 1);
 					contador_auxiliar_caminhada += 1;
 				}
-				if(contador_auxiliar_caminhada == 6){
+				if(contador_auxiliar_caminhada == 8){
 					contador_auxiliar_caminhada = 0;
 				}
 			}
