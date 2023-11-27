@@ -17,8 +17,8 @@ public class Bosqueada extends ApplicationAdapter {
 	Texture pedraTextura;
 	Sprite jacare_fofao;
 	Sprite pedra;
-	private float posX, posY;
 
+	boolean virado_esquerda = true;
 
 	// Defina a cor azul bebê (um tom suave de azul)
 	Color babyBlue = new Color(0.678f, 0.847f, 0.902f, 1f);
@@ -47,7 +47,7 @@ public class Bosqueada extends ApplicationAdapter {
 		pedra.setPosition(0, 0);
 
 		// definindo a posicao inicial
-		jacare_fofao.setPosition(0, 20);
+		jacare_fofao.setPosition(0, Gdx.graphics.getHeight()/6);
 
 	}
 
@@ -58,17 +58,30 @@ public class Bosqueada extends ApplicationAdapter {
 		// Movimenta a sprite do personagem para a esquerda quando a tecla seta esquerda é pressionada
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             jacare_fofao.setX(jacare_fofao.getX() - 20);
-			jacare_fofao.rotate(180);
+
+			// se estiver virado pra direita, vira pra esquerda
+			if(virado_esquerda == false){
+				jacare_fofao.flip(true, false);
+				virado_esquerda = true;
+			}
         }
+
         // Movimenta a sprite do personagem para a direita quando a tecla seta direita é pressionada
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             jacare_fofao.setX(jacare_fofao.getX() + 20);
-			jacare_fofao.rotate(180);
+			
+			// se estiver virado pra esquerda, vira pra direita
+			if(virado_esquerda == true){
+				jacare_fofao.flip(true, false);
+				virado_esquerda = false;
+			}
         }
+
 
 		batch.begin();
 
 		batch.draw(chao, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
 		batch.draw(pedra, 20, 600);
 
 		jacare_fofao.draw(batch);
