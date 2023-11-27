@@ -20,6 +20,8 @@ public class Bosqueada extends ApplicationAdapter {
 
 	boolean virado_esquerda = true;
 
+	int contador_auxiliar_caminhada = 0;
+
 	// Defina a cor azul bebê (um tom suave de azul)
 	Color babyBlue = new Color(0.678f, 0.847f, 0.902f, 1f);
 	
@@ -54,29 +56,66 @@ public class Bosqueada extends ApplicationAdapter {
 	@Override
 	public void render () {
 		ScreenUtils.clear(babyBlue);
+		boolean caminhando = false;
+		
 
 		// Movimenta a sprite do personagem para a esquerda quando a tecla seta esquerda é pressionada
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            jacare_fofao.setX(jacare_fofao.getX() - 20);
+            jacare_fofao.setX(jacare_fofao.getX() - 10);
+			caminhando = true;
 
 			// se estiver virado pra direita, vira pra esquerda
 			if(virado_esquerda == false){
 				jacare_fofao.flip(true, false);
 				virado_esquerda = true;
 			}
+
+			// movimento da caminhada do jaca
+			if(caminhando == true){
+				if(contador_auxiliar_caminhada < 3){
+					jacare_fofao.setY(jacare_fofao.getY() - 1);
+					contador_auxiliar_caminhada += 1;
+				}
+				if(contador_auxiliar_caminhada >= 3){
+					jacare_fofao.setY(jacare_fofao.getY() + 1);
+					contador_auxiliar_caminhada += 1;
+				}
+				if(contador_auxiliar_caminhada == 6){
+					contador_auxiliar_caminhada = 0;
+				}
+			}
+
         }
 
         // Movimenta a sprite do personagem para a direita quando a tecla seta direita é pressionada
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            jacare_fofao.setX(jacare_fofao.getX() + 20);
+            jacare_fofao.setX(jacare_fofao.getX() + 10);
+			caminhando = true;
 			
 			// se estiver virado pra esquerda, vira pra direita
 			if(virado_esquerda == true){
 				jacare_fofao.flip(true, false);
 				virado_esquerda = false;
 			}
+
+			// movimento da caminhada do jaca
+			if(caminhando == true){
+				if(contador_auxiliar_caminhada < 3){
+					jacare_fofao.setY(jacare_fofao.getY() - 1);
+					contador_auxiliar_caminhada += 1;
+				}
+				if(contador_auxiliar_caminhada >= 3){
+					jacare_fofao.setY(jacare_fofao.getY() + 1);
+					contador_auxiliar_caminhada += 1;
+				}
+				if(contador_auxiliar_caminhada == 6){
+					contador_auxiliar_caminhada = 0;
+				}
+			}
         }
 		
+		//////////////////////////////////////////////////////////////////////////////////////
+
 		// checa se o jacaras passou do ponto pra direita e bota ele na esquerda
 		if (jacare_fofao.getX() > 1240){
 			jacare_fofao.setPosition(-75, Gdx.graphics.getWidth()/10);
@@ -86,6 +125,8 @@ public class Bosqueada extends ApplicationAdapter {
 		if (jacare_fofao.getX() < -75){
 			jacare_fofao.setPosition( 1240, Gdx.graphics.getWidth()/10);
 		}
+
+		///////////////////////////////////////////////////////////////////////////////////////
 
 		batch.begin();
 
