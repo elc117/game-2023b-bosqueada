@@ -12,3 +12,8 @@
 ### Mudança do Cenário
 
 ![Erro ao carregar a imagem](Bosqueada/assets/prints/Screenshot%20(7).png)
+
+### Bosqueada está de cara nova
+   Com as novas texturas do mano Gatto a Bosqueada ganhou um novo visual, bem mais moderno, gostoso e com cristais roxinhos caindo do céu.
+
+![Erro ao carregar a imagem](Bosqueada/assets/prints/Screenshot%20(10).png)

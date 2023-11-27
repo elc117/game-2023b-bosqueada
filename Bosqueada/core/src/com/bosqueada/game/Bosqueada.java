@@ -55,8 +55,8 @@ public class Bosqueada extends ApplicationAdapter {
 		// Inicialize as pedras com diferentes posições e velocidades
         for (int i = 0; i < pedras_quantidade; i++) {
             float x = MathUtils.random(0, 1280);
-			float y = Gdx.graphics.getHeight() + MathUtils.random(640, 2000);
-            float velocidade = MathUtils.random(15, 30);
+			float y = Gdx.graphics.getHeight() + MathUtils.random(640, 5000);
+            float velocidade = MathUtils.random(50, 200);
 
             pedras[i] = new Pedra(pedra_textura, x, y, velocidade);
         }
