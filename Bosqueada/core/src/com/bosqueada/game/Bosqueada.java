@@ -45,10 +45,12 @@ public class Bosqueada extends ApplicationAdapter {
 		// Movimenta a sprite do personagem para a esquerda quando a tecla seta esquerda é pressionada
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             jacare_fofao.setX(jacare_fofao.getX() - 20);
+			jacare_fofao.rotate(180);
         }
         // Movimenta a sprite do personagem para a direita quando a tecla seta direita é pressionada
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             jacare_fofao.setX(jacare_fofao.getX() + 20);
+			jacare_fofao.rotate(180);
         }
 
 		batch.begin();
