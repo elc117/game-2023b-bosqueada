@@ -17,7 +17,6 @@ public class Bosqueada extends ApplicationAdapter {
 	Texture pedraTextura;
 	Sprite jacare_fofao;
 	Sprite pedra;
-	private float posX, posY;
 
 
 	// Defina a cor azul bebê (um tom suave de azul)
@@ -81,9 +80,6 @@ public class Bosqueada extends ApplicationAdapter {
 		jacare_fofao.getTexture().dispose();
 	}
 
-	private void moveJacare(){
-
-	}
 
 
 }
