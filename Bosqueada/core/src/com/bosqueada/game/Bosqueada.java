@@ -44,13 +44,13 @@ public class Bosqueada extends ApplicationAdapter {
         frameBuffer = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 
 		// textura do personagem
-		jacare_textura = new Texture("jacare.png");
+		jacare_textura = new Texture("texturas/jacare.png");
 
 		// textura da pedra
-		pedra_textura = new Texture("pedra.png");
+		pedra_textura = new Texture("texturas/pedra.png");
 
 		// textura das arvores de fundo
-		chao = new Texture("background2.jpg");
+		chao = new Texture("texturas/background2.jpg");
 
 		// criando o jacare
 		jacare = new Sprite(jacare_textura);
