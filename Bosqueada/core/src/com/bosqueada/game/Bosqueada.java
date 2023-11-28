@@ -54,7 +54,6 @@ public class Bosqueada extends ApplicationAdapter {
 
 		tempoPedra = 0;
 
-
 		// definindo a posicao inicial
 		jacare_fofao.setPosition(499, Gdx.graphics.getWidth()/10);
 
