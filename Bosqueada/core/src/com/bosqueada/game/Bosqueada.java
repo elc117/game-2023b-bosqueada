@@ -20,7 +20,7 @@ public class Bosqueada extends ApplicationAdapter {
 	Texture jacare_textura;
 	Texture background2;
 	Texture pedra_textura;
-	Sprite jacare_fofao;
+	Sprite jacare;
 	private Array<Rectangle> pedras;
 	private long tempoPedra;
 
@@ -46,7 +46,7 @@ public class Bosqueada extends ApplicationAdapter {
 		pedra_textura = new Texture("pedra.png");
 
 		// criando o jacare fofao com a textura
-		jacare_fofao = new Sprite(jacare_textura);
+		jacare = new Sprite(jacare_textura);
 
 
 		// cria um array para as pedras
@@ -55,7 +55,7 @@ public class Bosqueada extends ApplicationAdapter {
 		tempoPedra = 0;
 
 		// definindo a posicao inicial
-		jacare_fofao.setPosition(499, Gdx.graphics.getWidth()/10);
+		jacare.setPosition(499, Gdx.graphics.getWidth()/10);
 
 	}
 
@@ -68,23 +68,23 @@ public class Bosqueada extends ApplicationAdapter {
 
 		// Movimenta a sprite do personagem para a esquerda quando a tecla seta esquerda é pressionada
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            jacare_fofao.setX(jacare_fofao.getX() - 5);
+            jacare.setX(jacare.getX() - 5);
 			caminhando = true;
 
 			// se estiver virado pra direita, vira pra esquerda
 			if(virado_esquerda == false){
-				jacare_fofao.flip(true, false);
+				jacare.flip(true, false);
 				virado_esquerda = true;
 			}
 
 			// movimento da caminhada do jaca
 			if(caminhando == true){
 				if(contador_auxiliar_caminhada < 3){
-					jacare_fofao.setY(jacare_fofao.getY() - 1);
+					jacare.setY(jacare.getY() - 1);
 					contador_auxiliar_caminhada += 1;
 				}
 				if(contador_auxiliar_caminhada >= 3){
-					jacare_fofao.setY(jacare_fofao.getY() + 1);
+					jacare.setY(jacare.getY() + 1);
 					contador_auxiliar_caminhada += 1;
 				}
 				if(contador_auxiliar_caminhada == 6){
@@ -96,23 +96,23 @@ public class Bosqueada extends ApplicationAdapter {
 
         // Movimenta a sprite do personagem para a direita quando a tecla seta direita é pressionada
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            jacare_fofao.setX(jacare_fofao.getX() + 5);
+            jacare.setX(jacare.getX() + 5);
 			caminhando = true;
 			
 			// se estiver virado pra esquerda, vira pra direita
 			if(virado_esquerda == true){
-				jacare_fofao.flip(true, false);
+				jacare.flip(true, false);
 				virado_esquerda = false;
 			}
 
 			// movimento da caminhada do jaca
 			if(caminhando == true){
 				if(contador_auxiliar_caminhada < 3){
-					jacare_fofao.setY(jacare_fofao.getY() - 1);
+					jacare.setY(jacare.getY() - 1);
 					contador_auxiliar_caminhada += 1;
 				}
 				if(contador_auxiliar_caminhada >= 3){
-					jacare_fofao.setY(jacare_fofao.getY() + 1);
+					jacare.setY(jacare.getY() + 1);
 					contador_auxiliar_caminhada += 1;
 				}
 				if(contador_auxiliar_caminhada == 6){
@@ -125,13 +125,13 @@ public class Bosqueada extends ApplicationAdapter {
 		//////////////////////////////////////////////////////////////////////////////////////
 
 		// checa se o jacaras passou do ponto pra direita e bota ele na esquerda
-		if (jacare_fofao.getX() > 1240){
-			jacare_fofao.setPosition(-75, Gdx.graphics.getWidth()/10);
+		if (jacare.getX() > 1240){
+			jacare.setPosition(-75, Gdx.graphics.getWidth()/10);
 		}
 
 		// checa se o jacas passou do ponto pra esquerda e bota ele na direita
-		if (jacare_fofao.getX() < -75){
-			jacare_fofao.setPosition( 1240, Gdx.graphics.getWidth()/10);
+		if (jacare.getX() < -75){
+			jacare.setPosition( 1240, Gdx.graphics.getWidth()/10);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
@@ -140,7 +140,7 @@ public class Bosqueada extends ApplicationAdapter {
 
 		batch.draw(chao, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-		jacare_fofao.draw(batch);
+		jacare.draw(batch);
 
 		for(Rectangle pedra : pedras){
 		  batch.draw(pedra_textura, pedra.x, pedra.y);
@@ -155,7 +155,7 @@ public class Bosqueada extends ApplicationAdapter {
 	public void dispose () {
 		batch.dispose();
 		chao.dispose();
-		jacare_fofao.getTexture().dispose();
+		jacare.getTexture().dispose();
 	}
 
 	private void spawnPedras(){
