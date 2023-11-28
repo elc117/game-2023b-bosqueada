@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 
 public class Bosqueada extends ApplicationAdapter {
@@ -57,7 +56,7 @@ public class Bosqueada extends ApplicationAdapter {
 		jacare = new Sprite(jacare_textura);
 
 		// definindo a posicao inicial
-		jacare.setPosition(0, Gdx.graphics.getWidth()/10);
+		jacare.setPosition(0, Gdx.graphics.getWidth()/11);
 
 		pedras = new Pedra[pedras_quantidade];
 
@@ -84,12 +83,12 @@ public class Bosqueada extends ApplicationAdapter {
 
 		// checa se o jacaras passou do ponto pra direita e bota ele na esquerda
 		if (jacare.getX() > 1240){
-			jacare.setPosition(-75, Gdx.graphics.getWidth()/10);
+			jacare.setPosition(-75, Gdx.graphics.getWidth()/11);
 		}
 
 		// checa se o jacas passou do ponto pra esquerda e bota ele na direita
 		if (jacare.getX() < -75){
-			jacare.setPosition( 1240, Gdx.graphics.getWidth()/10);
+			jacare.setPosition( 1240, Gdx.graphics.getWidth()/11);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////////////
@@ -111,7 +110,7 @@ public class Bosqueada extends ApplicationAdapter {
 				if (detectarColisao(jacare, pedra.getSprite())) {
 					// o que acontece quando colide
 					// nesse caso, reseta a posicao do jaca
-					jacare.setPosition(0, Gdx.graphics.getWidth() / 10);
+					jacare.setPosition(0, Gdx.graphics.getWidth()/11);
 					// pausa o game
 					pause = true;
 				}
