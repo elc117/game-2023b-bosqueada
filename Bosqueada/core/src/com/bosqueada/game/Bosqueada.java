@@ -112,15 +112,21 @@ public class Bosqueada extends ApplicationAdapter {
 					// o que acontece quando colide
 					// nesse caso, reseta a posicao do jaca
 					jacare.setPosition(0, Gdx.graphics.getWidth() / 10);
+					// pausa o game
 					pause = true;
 				}
         	}
 		// se estiver pausado, salva o estado atual no buffer
 		}else{
 			frameBuffer.begin();
-			// O que foi desenhado até este ponto será salvo no FrameBuffer
 			frameBuffer.end();
+			// O que foi desenhado até este ponto será salvo no FrameBuffer
 			texturaPausada = frameBuffer.getColorBufferTexture();
+		}
+
+		// despausa quando aperta A
+		if(Gdx.input.isKeyPressed(Input.Keys.A)){
+			pause = false;
 		}
 
 		batch.end();
