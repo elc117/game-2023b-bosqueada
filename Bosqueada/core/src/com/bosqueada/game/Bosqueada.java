@@ -3,30 +3,29 @@ package com.bosqueada.game;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.TimeUtils;
-import java.util.Iterator;
 
 public class Bosqueada extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture chao;
 	Texture jacare_textura;
-	Texture background2;
 	Texture pedra_textura;
+	Texture background2;
 	Sprite jacare;
-	private Array<Rectangle> pedras;
-	private long tempoPedra;
+
+	// cria o vetor de pedras
+	Pedra[] pedras;
 
 	boolean virado_esquerda = true;
 
 	int contador_auxiliar_caminhada = 0;
+	int nivel = 1;
+	int pedras_quantidade = nivel * 25;
 
 	// Defina a cor azul bebê (um tom suave de azul)
 	Color babyBlue = new Color(0.678f, 0.847f, 0.902f, 1f);
@@ -39,88 +38,37 @@ public class Bosqueada extends ApplicationAdapter {
 		// textura do personagem
 		jacare_textura = new Texture("jacare.png");
 
+		// textura da pedra
+		pedra_textura = new Texture("pedra.png");
+
 		// textura das arvores de fundo
 		chao = new Texture("background2.jpg");
 
-		// textura pedra
-		pedra_textura = new Texture("pedra.png");
-
-		// criando o jacare fofao com a textura
+		// criando o jacare
 		jacare = new Sprite(jacare_textura);
 
-
-		// cria um array para as pedras
-		pedras = new Array<Rectangle>();
-
-		tempoPedra = 0;
-
 		// definindo a posicao inicial
-		jacare.setPosition(499, Gdx.graphics.getWidth()/10);
+		jacare.setPosition(0, Gdx.graphics.getWidth()/10);
+
+		pedras = new Pedra[pedras_quantidade];
+
+		// Inicialize as pedras com diferentes posições e velocidades
+        for (int i = 0; i < pedras_quantidade; i++) {
+            float x = MathUtils.random(0, 1280);
+			float y = Gdx.graphics.getHeight() + MathUtils.random(640, 5000);
+            float velocidade = MathUtils.random(50, 200);
+
+            pedras[i] = new Pedra(pedra_textura, x, y, velocidade);
+        }
 
 	}
 
 	@Override
 	public void render () {
 		ScreenUtils.clear(babyBlue);
-		boolean caminhando = false;
-
-		this.movePedras();
-
-		// Movimenta a sprite do personagem para a esquerda quando a tecla seta esquerda é pressionada
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            jacare.setX(jacare.getX() - 5);
-			caminhando = true;
-
-			// se estiver virado pra direita, vira pra esquerda
-			if(virado_esquerda == false){
-				jacare.flip(true, false);
-				virado_esquerda = true;
-			}
-
-			// movimento da caminhada do jaca
-			if(caminhando == true){
-				if(contador_auxiliar_caminhada < 3){
-					jacare.setY(jacare.getY() - 1);
-					contador_auxiliar_caminhada += 1;
-				}
-				if(contador_auxiliar_caminhada >= 3){
-					jacare.setY(jacare.getY() + 1);
-					contador_auxiliar_caminhada += 1;
-				}
-				if(contador_auxiliar_caminhada == 6){
-					contador_auxiliar_caminhada = 0;
-				}
-			}
-
-        }
-
-        // Movimenta a sprite do personagem para a direita quando a tecla seta direita é pressionada
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            jacare.setX(jacare.getX() + 5);
-			caminhando = true;
-			
-			// se estiver virado pra esquerda, vira pra direita
-			if(virado_esquerda == true){
-				jacare.flip(true, false);
-				virado_esquerda = false;
-			}
-
-			// movimento da caminhada do jaca
-			if(caminhando == true){
-				if(contador_auxiliar_caminhada < 3){
-					jacare.setY(jacare.getY() - 1);
-					contador_auxiliar_caminhada += 1;
-				}
-				if(contador_auxiliar_caminhada >= 3){
-					jacare.setY(jacare.getY() + 1);
-					contador_auxiliar_caminhada += 1;
-				}
-				if(contador_auxiliar_caminhada == 6){
-					contador_auxiliar_caminhada = 0;
-				}
-			}
-
-        }
+		float deltaTime = Gdx.graphics.getDeltaTime();
+		
+		moveJacare();
 		
 		//////////////////////////////////////////////////////////////////////////////////////
 
@@ -142,13 +90,13 @@ public class Bosqueada extends ApplicationAdapter {
 
 		jacare.draw(batch);
 
-		for(Rectangle pedra : pedras){
-		  batch.draw(pedra_textura, pedra.x, pedra.y);
-
-		}
+		// Atualiza e desenha as pedras
+        for (Pedra pedra : pedras) {
+            pedra.atualizar(deltaTime);
+            pedra.desenhar(batch);
+        }
 
 		batch.end();
-		
 	}
 	
 	@Override
@@ -156,26 +104,69 @@ public class Bosqueada extends ApplicationAdapter {
 		batch.dispose();
 		chao.dispose();
 		jacare.getTexture().dispose();
+		pedra_textura.dispose();
 	}
 
-	private void spawnPedras(){
-		Rectangle pedra = new Rectangle(MathUtils.random(0, Gdx.graphics.getWidth() - pedra_textura.getWidth()), 700, pedra_textura.getWidth(), pedra_textura.getHeight());
-		pedras.add(pedra);
-		tempoPedra = TimeUtils.nanoTime();
-	}
 
-	private void movePedras(){
-		if( TimeUtils.nanoTime() - tempoPedra > 999999){
-		this.spawnPedras();
-		}
+	// movimento do jaca
+	private void moveJacare(){
 
-		for( Iterator<Rectangle> iter = pedras.iterator(); iter.hasNext(); ){
-			Rectangle pedra = iter.next();
-			pedra.y -= 375 * Gdx.graphics.getDeltaTime();
-			if(pedra.y < 100){
-				iter.remove();
+		boolean caminhando = false;
+
+		// Movimenta o personagem para a esquerda quando a tecla seta esquerda é pressionada
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            jacare.setX(jacare.getX() - 10);
+			caminhando = true;
+
+			// se estiver virado pra direita, vira pra esquerda
+			if(virado_esquerda == false){
+				jacare.flip(true, false);
+				virado_esquerda = true;
 			}
-		}
+
+			// movimento da caminhada do jaca
+			if(caminhando == true){
+				if(contador_auxiliar_caminhada < 4){
+					jacare.setY(jacare.getY() - 1);
+					contador_auxiliar_caminhada += 1;
+				}
+				if(contador_auxiliar_caminhada >= 4){
+					jacare.setY(jacare.getY() + 1);
+					contador_auxiliar_caminhada += 1;
+				}
+				if(contador_auxiliar_caminhada == 8){
+					contador_auxiliar_caminhada = 0;
+				}
+			}
+
+        }
+
+        // Movimenta o personagem para a direita quando a tecla seta direita é pressionada
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            jacare.setX(jacare.getX() + 10);
+			caminhando = true;
+			
+			// se estiver virado pra esquerda, vira pra direita
+			if(virado_esquerda == true){
+				jacare.flip(true, false);
+				virado_esquerda = false;
+			}
+
+			// movimento da caminhada do jaca
+			if(caminhando == true){
+				if(contador_auxiliar_caminhada < 4){
+					jacare.setY(jacare.getY() - 1);
+					contador_auxiliar_caminhada += 1;
+				}
+				if(contador_auxiliar_caminhada >= 4){
+					jacare.setY(jacare.getY() + 1);
+					contador_auxiliar_caminhada += 1;
+				}
+				if(contador_auxiliar_caminhada == 8){
+					contador_auxiliar_caminhada = 0;
+				}
+			}
+        }
 	}
 
 
