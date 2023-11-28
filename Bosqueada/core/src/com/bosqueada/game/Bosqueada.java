@@ -25,7 +25,7 @@ public class Bosqueada extends ApplicationAdapter {
 
 	int contador_auxiliar_caminhada = 0;
 	int nivel = 1;
-	int pedras_quantidade = nivel * 25;
+	int pedras_quantidade = nivel * 50;
 
 	// Defina a cor azul bebê (um tom suave de azul)
 	Color babyBlue = new Color(0.678f, 0.847f, 0.902f, 1f);
@@ -66,6 +66,7 @@ public class Bosqueada extends ApplicationAdapter {
 	@Override
 	public void render () {
 		ScreenUtils.clear(babyBlue);
+
 		float deltaTime = Gdx.graphics.getDeltaTime();
 		
 		moveJacare();
@@ -94,7 +95,16 @@ public class Bosqueada extends ApplicationAdapter {
         for (Pedra pedra : pedras) {
             pedra.atualizar(deltaTime);
             pedra.desenhar(batch);
+
+				// Verifica a colisão entre o jacaré e a pedra
+			if (detectarColisao(jacare, pedra.getSprite())) {
+				// Lógica para lidar com a colisão, por exemplo:
+				// Resetar a posição do jacaré ou fazer alguma ação
+				jacare.setPosition(0, Gdx.graphics.getWidth() / 10);
+			}
         }
+
+		
 
 		batch.end();
 	}
@@ -167,6 +177,11 @@ public class Bosqueada extends ApplicationAdapter {
 				}
 			}
         }
+	}
+
+	// detecta colisoes entre duas sprites
+	private boolean detectarColisao(Sprite sprite1, Sprite sprite2) {
+		return sprite1.getBoundingRectangle().overlaps(sprite2.getBoundingRectangle());
 	}
 
 

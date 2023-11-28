@@ -5,25 +5,29 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Pedra {
-    private Sprite sprite;
+    private Sprite pedra_sprite;
     private float velocidade;
     
     // Cria a pedra com a sua velocidade
     public Pedra(Texture textura, float x, float y, float velocidade) {
-        sprite = new Sprite(textura);
-        sprite.setPosition(x, y);
+        pedra_sprite = new Sprite(textura);
+        pedra_sprite.setPosition(x, y);
         this.velocidade = velocidade;
+    }
+
+    public Sprite getSprite(){
+        return pedra_sprite;
     }
 
     public void atualizar(float deltaTime) {
 
         // Atualiza a posição da pedra com base na velocidade
-        float novaPosicaoY = sprite.getY() - velocidade * deltaTime;
-        sprite.setY(novaPosicaoY);
+        float novaPosicaoY = pedra_sprite.getY() - velocidade * deltaTime;
+        pedra_sprite.setY(novaPosicaoY);
     }
 
     // Desenha a pedra no batch
     public void desenhar(SpriteBatch batch) {
-        sprite.draw(batch);
+        pedra_sprite.draw(batch);
     }
 }
