@@ -165,7 +165,7 @@ public class Bosqueada extends ApplicationAdapter {
 	}
 
 	private void movePedras(){
-		if( TimeUtils.nanoTime() - tempoPedra > 469999999){
+		if( TimeUtils.nanoTime() - tempoPedra > 999999){
 		this.spawnPedras();
 		}
 
