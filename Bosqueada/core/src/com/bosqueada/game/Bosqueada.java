@@ -96,10 +96,10 @@ public class Bosqueada extends ApplicationAdapter {
             pedra.atualizar(deltaTime);
             pedra.desenhar(batch);
 
-				// Verifica a colisão entre o jacaré e a pedra
+			// Verifica a colisão entre o jacaré e cada uma das pedras
 			if (detectarColisao(jacare, pedra.getSprite())) {
-				// Lógica para lidar com a colisão, por exemplo:
-				// Resetar a posição do jacaré ou fazer alguma ação
+				// o que acontece quando colide
+				// nesse caso, reseta a posicao do jaca
 				jacare.setPosition(0, Gdx.graphics.getWidth() / 10);
 			}
         }
