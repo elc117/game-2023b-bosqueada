@@ -19,7 +19,7 @@ public class Bosqueada extends ApplicationAdapter {
 	Texture chao;
 	Texture jacare_textura;
 	Texture background2;
-	Texture pedraTextura;
+	Texture pedra_textura;
 	Sprite jacare_fofao;
 	private Array<Rectangle> pedras;
 	private long tempoPedra;
@@ -43,12 +43,13 @@ public class Bosqueada extends ApplicationAdapter {
 		chao = new Texture("background2.jpg");
 
 		// textura pedra
-		pedraTextura = new Texture("pedra.png");
+		pedra_textura = new Texture("pedra.png");
 
 		// criando o jacare fofao com a textura
 		jacare_fofao = new Sprite(jacare_textura);
 
 
+		// cria um array para as pedras
 		pedras = new Array<Rectangle>();
 
 		tempoPedra = 0;
@@ -143,7 +144,7 @@ public class Bosqueada extends ApplicationAdapter {
 		jacare_fofao.draw(batch);
 
 		for(Rectangle pedra : pedras){
-		  batch.draw(pedraTextura, pedra.x, pedra.y);
+		  batch.draw(pedra_textura, pedra.x, pedra.y);
 
 		}
 
@@ -159,7 +160,7 @@ public class Bosqueada extends ApplicationAdapter {
 	}
 
 	private void spawnPedras(){
-		Rectangle pedra = new Rectangle(MathUtils.random(0, Gdx.graphics.getWidth() - pedraTextura.getWidth()), 700, pedraTextura.getWidth(), pedraTextura.getHeight());
+		Rectangle pedra = new Rectangle(MathUtils.random(0, Gdx.graphics.getWidth() - pedra_textura.getWidth()), 700, pedra_textura.getWidth(), pedra_textura.getHeight());
 		pedras.add(pedra);
 		tempoPedra = TimeUtils.nanoTime();
 	}
