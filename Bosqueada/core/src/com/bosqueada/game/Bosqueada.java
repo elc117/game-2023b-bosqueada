@@ -9,6 +9,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 
 public class Bosqueada extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -17,11 +20,14 @@ public class Bosqueada extends ApplicationAdapter {
 	Texture pedra_textura;
 	Texture background2;
 	Sprite jacare;
+	FrameBuffer frameBuffer;
+	Texture texturaPausada;
 
 	// cria o vetor de pedras
 	Pedra[] pedras;
 
 	boolean virado_esquerda = true;
+	boolean pause = false;
 
 	int contador_auxiliar_caminhada = 0;
 	int nivel = 1;
@@ -34,6 +40,9 @@ public class Bosqueada extends ApplicationAdapter {
 	public void create () {
 
 		batch = new SpriteBatch();
+
+		// Criando um FrameBuffer com o tamanho da tela
+        frameBuffer = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 
 		// textura do personagem
 		jacare_textura = new Texture("jacare.png");
@@ -87,26 +96,42 @@ public class Bosqueada extends ApplicationAdapter {
 
 		batch.begin();
 
-		batch.draw(chao, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		// desenha caso nao esteja pausado
+		if(!pause){
+			batch.draw(chao, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-		jacare.draw(batch);
+			jacare.draw(batch);
 
-		// Atualiza e desenha as pedras
-        for (Pedra pedra : pedras) {
-            pedra.atualizar(deltaTime);
-            pedra.desenhar(batch);
+			// Atualiza e desenha as pedras
+        	for (Pedra pedra : pedras) {
+        	    pedra.atualizar(deltaTime);
+        	    pedra.desenhar(batch);
 
-			// Verifica a colisão entre o jacaré e cada uma das pedras
-			if (detectarColisao(jacare, pedra.getSprite())) {
-				// o que acontece quando colide
-				// nesse caso, reseta a posicao do jaca
-				jacare.setPosition(0, Gdx.graphics.getWidth() / 10);
-			}
-        }
-
-		
+				// Verifica a colisão entre o jacaré e cada uma das pedras
+				if (detectarColisao(jacare, pedra.getSprite())) {
+					// o que acontece quando colide
+					// nesse caso, reseta a posicao do jaca
+					jacare.setPosition(0, Gdx.graphics.getWidth() / 10);
+					pause = true;
+				}
+        	}
+		// se estiver pausado, salva o estado atual no buffer
+		}else{
+			frameBuffer.begin();
+			// O que foi desenhado até este ponto será salvo no FrameBuffer
+			frameBuffer.end();
+			texturaPausada = frameBuffer.getColorBufferTexture();
+		}
 
 		batch.end();
+
+		// se não estiver pausado, desenha a textura salva na tela
+        if (texturaPausada != null && pause) {
+            batch.begin();
+            batch.draw(texturaPausada, 0, 0);
+            batch.end();
+        }
+
 	}
 	
 	@Override
@@ -115,6 +140,10 @@ public class Bosqueada extends ApplicationAdapter {
 		chao.dispose();
 		jacare.getTexture().dispose();
 		pedra_textura.dispose();
+		frameBuffer.dispose();
+        if (texturaPausada != null) {
+            texturaPausada.dispose();
+        }
 	}
 
 
@@ -183,6 +212,4 @@ public class Bosqueada extends ApplicationAdapter {
 	private boolean detectarColisao(Sprite sprite1, Sprite sprite2) {
 		return sprite1.getBoundingRectangle().overlaps(sprite2.getBoundingRectangle());
 	}
-
-
 }
