@@ -26,6 +26,8 @@ public class Bosqueada extends ApplicationAdapter {
 	BitmapFont fonte_pergunta;
 	BitmapFont fonte_alternativas;
 	Texture caixaPerguntas_textura;
+	
+	Texture botao_sair;
 
 	// cria o vetor de pedras
 	Pedra[] pedras;
@@ -50,6 +52,8 @@ public class Bosqueada extends ApplicationAdapter {
 
 		// Criando um FrameBuffer com o tamanho da tela
         frameBuffer = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+
+		botao_sair = new Texture("texturas/botao_sair.png");
 
 		// textura do personagem
 		jacare_textura = new Texture("texturas/jacare.png");
@@ -91,6 +95,12 @@ public class Bosqueada extends ApplicationAdapter {
 	public void render() {
 		ScreenUtils.clear(babyBlue);
 
+		// pega a cordenada do mouse dentro do loop do game
+		int mouseX = Gdx.input.getX();
+		// Inverte a coordenada y para ficar de acordo com a libgdx
+		int mouseY = Gdx.graphics.getHeight() - Gdx.input.getY(); 
+
+		// pega o deltaTime
 		float deltaTime = Gdx.graphics.getDeltaTime();
 		
 		moveJacare();
@@ -113,8 +123,10 @@ public class Bosqueada extends ApplicationAdapter {
 
 		// desenha caso nao esteja pausado
 		if(!pause){
+			// fundo
 			batch.draw(chao, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
+			// jacaras
 			jacare.draw(batch);
 
 			// Atualiza e desenha as pedras
@@ -131,15 +143,32 @@ public class Bosqueada extends ApplicationAdapter {
 					pause = true;
 				}
         	}
+
+			// botao sair
+			batch.draw(botao_sair, Gdx.graphics.getWidth() - botao_sair.getWidth(), Gdx.graphics.getHeight() - botao_sair.getHeight());
+			
+			// Verifica se o botão_sair foi clicado com o botão esquerdo do mouse
+			if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
+            	mouseX >= Gdx.graphics.getWidth() - botao_sair.getWidth() &&
+            	mouseX <= Gdx.graphics.getWidth() &&
+            	mouseY >= Gdx.graphics.getHeight() - botao_sair.getHeight() &&
+            	mouseY <= Gdx.graphics.getHeight()) {
+				// Fecha o jogo
+        		Gdx.app.exit(); 
+    		}
+
 		// se estiver pausado, salva o estado atual no buffer
 		}else if(pause){
+
 			// pergunta
-			
     		pergunta.desenhar(batch);
-    		
+
+			// botao sair
+			batch.draw(botao_sair, Gdx.graphics.getWidth() - botao_sair.getWidth(), Gdx.graphics.getHeight() - botao_sair.getHeight());
 			
 			// inicia o buffer
 			frameBuffer.begin();
+			
 			frameBuffer.end();
 
 			// O que foi desenhado até este ponto será salvo no FrameBuffer

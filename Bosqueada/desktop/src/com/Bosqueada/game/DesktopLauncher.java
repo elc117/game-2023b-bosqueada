@@ -11,7 +11,9 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
 		config.setTitle("Bosqueada");
-		config.setWindowedMode(1280,640);
+
+		// Isso define o modo de tela cheia com as configurações padrão do monitor
+		config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
 		
 		new Lwjgl3Application(new Bosqueada(), config);
 	}
