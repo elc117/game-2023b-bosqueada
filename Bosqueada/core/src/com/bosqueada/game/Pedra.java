@@ -15,12 +15,12 @@ public class Pedra {
         this.velocidade = velocidade;
     }
 
+    // pega o sprite pra fazer a colisao
     public Sprite getSprite(){
         return pedra_sprite;
     }
 
     public void atualizar(float deltaTime) {
-
         // Atualiza a posição da pedra com base na velocidade
         float novaPosicaoY = pedra_sprite.getY() - velocidade * deltaTime;
         pedra_sprite.setY(novaPosicaoY);

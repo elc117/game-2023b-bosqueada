@@ -11,8 +11,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 public class Bosqueada extends ApplicationAdapter {
+
 	SpriteBatch batch;
 	Texture chao;
 	Texture jacare_textura;
@@ -21,9 +23,13 @@ public class Bosqueada extends ApplicationAdapter {
 	Sprite jacare;
 	FrameBuffer frameBuffer;
 	Texture texturaPausada;
+	BitmapFont fonte;
+	Texture caixaPerguntas_textura;
 
 	// cria o vetor de pedras
 	Pedra[] pedras;
+
+	CaixaPerguntas pergunta;
 
 	boolean virado_esquerda = true;
 	boolean pause = false;
@@ -32,8 +38,9 @@ public class Bosqueada extends ApplicationAdapter {
 	int nivel = 1;
 	int pedras_quantidade = nivel * 50;
 
-	// Defina a cor azul bebê (um tom suave de azul)
+	// cores
 	Color babyBlue = new Color(0.678f, 0.847f, 0.902f, 1f);
+	Color black = new Color(0,0,0,0);
 	
 	@Override
 	public void create () {
@@ -60,6 +67,10 @@ public class Bosqueada extends ApplicationAdapter {
 
 		pedras = new Pedra[pedras_quantidade];
 
+		caixaPerguntas_textura = new Texture("texturas/fundoDaPergunta.jpg");
+		fonte = new BitmapFont();
+		pergunta = new CaixaPerguntas(fonte, caixaPerguntas_textura);
+
 		// Inicialize as pedras com diferentes posições e velocidades
         for (int i = 0; i < pedras_quantidade; i++) {
             float x = MathUtils.random(0, 1280);
@@ -69,10 +80,13 @@ public class Bosqueada extends ApplicationAdapter {
             pedras[i] = new Pedra(pedra_textura, x, y, velocidade);
         }
 
+		// le o arquivo
+		pergunta.le_arquivo();
+
 	}
 
 	@Override
-	public void render () {
+	public void render() {
 		ScreenUtils.clear(babyBlue);
 
 		float deltaTime = Gdx.graphics.getDeltaTime();
@@ -116,9 +130,16 @@ public class Bosqueada extends ApplicationAdapter {
 				}
         	}
 		// se estiver pausado, salva o estado atual no buffer
-		}else{
+		}else if(pause){
+			// pergunta
+			
+    		pergunta.desenhar(batch);
+    		
+			
+			// inicia o buffer
 			frameBuffer.begin();
 			frameBuffer.end();
+
 			// O que foi desenhado até este ponto será salvo no FrameBuffer
 			texturaPausada = frameBuffer.getColorBufferTexture();
 		}
@@ -149,6 +170,7 @@ public class Bosqueada extends ApplicationAdapter {
         if (texturaPausada != null) {
             texturaPausada.dispose();
         }
+		fonte.dispose();
 	}
 
 
