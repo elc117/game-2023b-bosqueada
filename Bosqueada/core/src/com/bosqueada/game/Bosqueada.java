@@ -166,6 +166,16 @@ public class Bosqueada extends ApplicationAdapter {
 			// botao sair
 			batch.draw(botao_sair, Gdx.graphics.getWidth() - botao_sair.getWidth(), Gdx.graphics.getHeight() - botao_sair.getHeight());
 			
+			// Verifica se o botão_sair foi clicado com o botão esquerdo do mouse
+			if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
+            	mouseX >= Gdx.graphics.getWidth() - botao_sair.getWidth() &&
+            	mouseX <= Gdx.graphics.getWidth() &&
+            	mouseY >= Gdx.graphics.getHeight() - botao_sair.getHeight() &&
+            	mouseY <= Gdx.graphics.getHeight()) {
+				// Fecha o jogo
+        		Gdx.app.exit(); 
+    		}
+			
 			// inicia o buffer
 			frameBuffer.begin();
 			
