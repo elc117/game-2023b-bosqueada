@@ -175,7 +175,7 @@ public class Bosqueada extends ApplicationAdapter {
 				// Fecha o jogo
         		Gdx.app.exit(); 
     		}
-			
+
 			// inicia o buffer
 			frameBuffer.begin();
 			
@@ -221,8 +221,8 @@ public class Bosqueada extends ApplicationAdapter {
 
 		boolean caminhando = false;
 
-		// Movimenta o personagem para a esquerda quando a tecla seta esquerda é pressionada
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+		// Movimenta o personagem para a esquerda quando a tecla seta esquerda ou 'A' é pressionada
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
             jacare.setX(jacare.getX() - 10);
 			caminhando = true;
 
@@ -249,8 +249,8 @@ public class Bosqueada extends ApplicationAdapter {
 
         }
 
-        // Movimenta o personagem para a direita quando a tecla seta direita é pressionada
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        // Movimenta o personagem para a direita quando a tecla seta direita ou 'D' é pressionada
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
             jacare.setX(jacare.getX() + 10);
 			caminhando = true;
 			
