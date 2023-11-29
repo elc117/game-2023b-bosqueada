@@ -68,6 +68,7 @@ public class CaixaPerguntas {
         }
     }
 
+    // desenha as perguntas
     public void desenhar(SpriteBatch batch){
         fonte_pergunta.draw(batch, pergunta, posPerguntaX, posPerguntaY);
         fonte_alternativas.draw(batch, alternativas[0], posPerguntaX, posPerguntaY - 100);
