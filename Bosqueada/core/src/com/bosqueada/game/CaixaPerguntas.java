@@ -40,7 +40,7 @@ public class CaixaPerguntas {
     public void le_arquivo(){
         
         // Lê o arquivo de perguntas
-        FileHandle file = Gdx.files.internal("questoes/Easy.txt");
+        FileHandle file = Gdx.files.internal("questoes/PerguntasParadigmas.txt");
         String conteudoArquivo = file.readString();
 
         // inicializa variaveis
