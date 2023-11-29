@@ -23,7 +23,8 @@ public class Bosqueada extends ApplicationAdapter {
 	Sprite jacare;
 	FrameBuffer frameBuffer;
 	Texture texturaPausada;
-	BitmapFont fonte;
+	BitmapFont fonte_pergunta;
+	BitmapFont fonte_alternativas;
 	Texture caixaPerguntas_textura;
 
 	// cria o vetor de pedras
@@ -68,8 +69,9 @@ public class Bosqueada extends ApplicationAdapter {
 		pedras = new Pedra[pedras_quantidade];
 
 		caixaPerguntas_textura = new Texture("texturas/fundoDaPergunta.jpg");
-		fonte = new BitmapFont();
-		pergunta = new CaixaPerguntas(fonte, caixaPerguntas_textura);
+		fonte_pergunta = new BitmapFont();
+		fonte_alternativas = new BitmapFont();
+		pergunta = new CaixaPerguntas(fonte_pergunta, fonte_alternativas, caixaPerguntas_textura);
 
 		// Inicialize as pedras com diferentes posições e velocidades
         for (int i = 0; i < pedras_quantidade; i++) {
@@ -170,7 +172,8 @@ public class Bosqueada extends ApplicationAdapter {
         if (texturaPausada != null) {
             texturaPausada.dispose();
         }
-		fonte.dispose();
+		fonte_pergunta.dispose();
+		fonte_alternativas.dispose();
 	}
 
 
