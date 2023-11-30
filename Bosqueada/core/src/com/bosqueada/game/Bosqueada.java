@@ -143,7 +143,7 @@ public class Bosqueada extends ApplicationAdapter {
 
 		// Inicialize as pedras com diferentes posicoes e velocidades
         for (int i = 0; i < pedras_quantidade; i++) {
-            float x = MathUtils.random(0, 1280);
+            float x = MathUtils.random(0, Gdx.graphics.getWidth());
 			float y = Gdx.graphics.getHeight() + MathUtils.random(640, 5000);
             float velocidade = MathUtils.random(100, 300);
 
@@ -298,7 +298,7 @@ public class Bosqueada extends ApplicationAdapter {
 				
 				// atualiza arma e tiro pra direita
 		 		}else{
-					 arma.atualizaArma(jacare.getX() + jacare.getWidth()/4 + 30, jacare.getY() + jacare.getHeight()/2 + 20, arma_sprite);
+					 arma.atualizaArma(jacare.getX() + jacare.getWidth()/4 + 40, jacare.getY() + jacare.getHeight()/2 + 20, arma_sprite);
 					 disparoX = jacare.getX() + jacare.getWidth()/4 + 60;
 					 disparoY = jacare.getY() + jacare.getHeight()/2 + 15;
 		 		}
