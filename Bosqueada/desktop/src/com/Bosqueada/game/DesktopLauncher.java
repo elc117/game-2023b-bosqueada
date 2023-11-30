@@ -12,7 +12,7 @@ public class DesktopLauncher {
 		config.setForegroundFPS(60);
 		config.setTitle("Bosqueada");
 
-		// Isso define o modo de tela cheia com as configurações padrão do monitor
+		// Isso define o modo de tela cheia com as configuracoes padrao do monitor
 		config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
 		
 		new Lwjgl3Application(new Bosqueada(), config);

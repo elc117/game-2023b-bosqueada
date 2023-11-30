@@ -21,7 +21,7 @@ public class Pedra {
     }
 
     public void atualizar(float deltaTime) {
-        // Atualiza a posição da pedra com base na velocidade
+        // Atualiza a posicao da pedra com base na velocidade
         float novaPosicaoY = pedra_sprite.getY() - velocidade * deltaTime;
         pedra_sprite.setY(novaPosicaoY);
     }
