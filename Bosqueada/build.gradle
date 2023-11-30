@@ -69,3 +69,14 @@ project(":core") {
         
     }
 }
+
+project(":html") {
+    apply plugin: "gwt"
+
+    dependencies {
+        project ":core"
+        compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+    }
+}
