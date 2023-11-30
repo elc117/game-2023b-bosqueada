@@ -8,11 +8,14 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -46,6 +49,15 @@ public class Bosqueada extends ApplicationAdapter {
 	Texture botao_alternativa_errada;
 	Texture botao_alternativa_exata;
 
+<<<<<<< HEAD
+=======
+	BitmapFont fonte_pontos;
+	int pontos = 0;
+
+	List<Tiro> tiros;
+	
+
+>>>>>>> 51ebb46e05fa1449204c9d86c25128e5efd359c3
 	// cria o vetor de pedras
 	Pedra[] pedras;
 
@@ -92,6 +104,17 @@ public class Bosqueada extends ApplicationAdapter {
 		// textura das arvores de fundo
 		chao = new Texture("texturas/background2.jpg");
 
+<<<<<<< HEAD
+=======
+		tiro_textura = new Texture("texturas/tiro.png");
+
+		tiro = new Tiro(tiro_textura);
+
+		tiros = new ArrayList<>();
+
+		fonte_pontos = new BitmapFont();
+
+>>>>>>> 51ebb46e05fa1449204c9d86c25128e5efd359c3
 		// criando o jacare
 		jacare = new Sprite(jacare_textura);
 
@@ -170,6 +193,26 @@ public class Bosqueada extends ApplicationAdapter {
 			// jacaras
 			jacare.draw(batch);
 
+			// contador de pontos
+			fonte_pontos.getData().setScale(2);
+
+			// Cria um objeto GlyphLayout para calcular as dimensões do texto
+			GlyphLayout layout = new GlyphLayout(fonte_pontos, "Pontos: " + pontos);
+
+			// Obtém a largura e altura real do texto com base na fonte e conteúdo
+			float textWidth = layout.width;
+			float textHeight = layout.height;
+
+			// Calcula a posição X centralizada na tela
+			float x = (Gdx.graphics.getWidth() - textWidth) / 2;
+
+			// Calcula a posição Y na parte superior da tela com um pequeno espaço para baixo (20 pixels)
+			float y = Gdx.graphics.getHeight() - textHeight - 20;
+
+			// Desenha o texto "Pontos: " seguido pelo valor da variável 'pontos' na tela
+			fonte_pontos.draw(batch, "Pontos: " + pontos, x, y);
+
+			
 			// Atualiza e desenha as pedras
         	for (Pedra pedra : pedras) {
         	    pedra.atualizar(deltaTime);
@@ -348,6 +391,7 @@ public class Bosqueada extends ApplicationAdapter {
 		pedra_textura.dispose();
 		frameBuffer.dispose();
 		tiro_textura.dispose();
+		fonte_pontos.dispose();
         if (texturaPausada != null) {
             texturaPausada.dispose();
         }
@@ -467,6 +511,7 @@ public class Bosqueada extends ApplicationAdapter {
 					if (tiro.getBoundingRectangle().overlaps(pedra.getSprite().getBoundingRectangle())) {
 						tiroIterator.remove();
 						colidiu = true;
+						pontos++;
 						break;
 					}
 				}
