@@ -60,9 +60,10 @@ public class Bosqueada extends ApplicationAdapter {
 	boolean arma_virada_esquerda = true;
 	boolean virado_esquerda = true;
 	boolean pause = false;
-	boolean menu_inicio = true;
-	boolean menu_pergunta = true;
+	boolean menu_inicio = false;
+	boolean menu_pergunta = false;
 	boolean armado;
+	boolean vida = true;
 
 	Sprite municao;
 	Texture municao_textura;
@@ -144,7 +145,7 @@ public class Bosqueada extends ApplicationAdapter {
         for (int i = 0; i < pedras_quantidade; i++) {
             float x = MathUtils.random(0, 1280);
 			float y = Gdx.graphics.getHeight() + MathUtils.random(640, 5000);
-            float velocidade = MathUtils.random(100, 400);
+            float velocidade = MathUtils.random(100, 300);
 
             pedras[i] = new Pedra(pedra_textura, x, y, velocidade);
         }
@@ -184,6 +185,11 @@ public class Bosqueada extends ApplicationAdapter {
 		///////////////////////////////////////////////////////////////////////////////////////
 
 		batch.begin();
+
+		if(!vida){
+			menu_pergunta = true;
+			pause = true;
+		}
 
 		// desenha caso nao esteja pausado
 		if(!pause){
@@ -328,12 +334,10 @@ public class Bosqueada extends ApplicationAdapter {
 				if(pergunta.resposta_correta() == 'a'){
 					// desenha um botao verde
 					batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 500);
-					espera(2);
 				// se estiver errado
 				}else{
 					// desenha um botao vermelho
 					batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 500);
-					espera(2);
 				}
 			// segundo botao
     		}if(Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
@@ -344,12 +348,10 @@ public class Bosqueada extends ApplicationAdapter {
 					if(pergunta.resposta_correta() == 'b'){
 						// desenha um botao verde
 						batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 700);
-						espera(2);
 					// se estiver errado
 					}else{
 						// desenha um botao vermelho
 						batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 700);
-						espera(2);
 					}
 			// terceiro botao
 			}if(Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
@@ -360,12 +362,10 @@ public class Bosqueada extends ApplicationAdapter {
 					if(pergunta.resposta_correta() == 'c'){
 						// desenha um botao verde
 						batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 900);
-						espera(2);
 					// se estiver errado
 					}else{
 						// desenha um botao vermelho
 						batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 900);
-						espera(2);
 					}
 			}
 
@@ -494,7 +494,6 @@ public class Bosqueada extends ApplicationAdapter {
 		if( Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
 			novoTiro.atirarMouse(mouseX, mouseY);
 			tiros.add(novoTiro);
-
 			// diminui uma municao por cada disparo
 			if(municao_quantidade > 0){
 				municao_quantidade--;
@@ -568,23 +567,4 @@ public class Bosqueada extends ApplicationAdapter {
 	private boolean detectarColisao(Sprite sprite1, Sprite sprite2) {
 		return sprite1.getBoundingRectangle().overlaps(sprite2.getBoundingRectangle());
 	}
-
-	// faz o programa esperar alguns segundos
-	private void espera(float tempo_de_espera){
-		// Variáveis de controle para temporização
-		float tempoInicial = 0;
-		boolean pause = true;
-		if (pause) {
-			// Verifica quanto tempo passou desde o início do atraso
-			float tempoAtual = Gdx.graphics.getDeltaTime();
-			tempoInicial += tempoAtual;
-		
-		    // Verifica se o tempo de espera foi alcançado
-			if (tempoInicial >= tempo_de_espera) {
-		        // Lógica para quando o tempo de espera terminar
-		        pause = false;
-		    }
-		}
-	}
-}	
-
+}
