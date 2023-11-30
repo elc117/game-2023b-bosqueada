@@ -13,7 +13,9 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class Bosqueada extends ApplicationAdapter {
 
@@ -28,10 +30,13 @@ public class Bosqueada extends ApplicationAdapter {
 	FreeTypeFontGenerator gerador;
     FreeTypeFontGenerator.FreeTypeFontParameter parametro;
 	Texture caixaPerguntas_textura;
+	Texture tiro_textura;
+	Tiro tiro;
+	
 	Texture botao_sair;
-	Texture botao_alternativa;
-	Texture botao_alternativa_exata;
-	Texture botao_alternativa_errada;
+
+	List<Tiro> tiros;
+	
 
 	// cria o vetor de pedras
 	Pedra[] pedras;
@@ -75,6 +80,12 @@ public class Bosqueada extends ApplicationAdapter {
 
 		// textura das arvores de fundo
 		chao = new Texture("texturas/background2.jpg");
+
+		tiro_textura = new Texture("texturas/tiro.png");
+
+		tiro = new Tiro(tiro_textura);
+
+		tiros = new ArrayList<>();
 
 		// criando o jacare
 		jacare = new Sprite(jacare_textura);
@@ -169,6 +180,10 @@ public class Bosqueada extends ApplicationAdapter {
 				// Fecha o jogo
         		Gdx.app.exit(); 
     		}
+
+			handleInput();
+			atualiza();
+			desenha();
 
 		// se estiver pausado, salva o estado atual no buffer
 		}else if(pause && menu_pergunta){
@@ -282,6 +297,7 @@ public class Bosqueada extends ApplicationAdapter {
 		jacare.getTexture().dispose();
 		pedra_textura.dispose();
 		frameBuffer.dispose();
+		tiro_textura.dispose();
         if (texturaPausada != null) {
             texturaPausada.dispose();
         }
@@ -348,6 +364,75 @@ public class Bosqueada extends ApplicationAdapter {
 				}
 			}
         }
+	}
+
+	private void handleInput(){
+		Tiro novoTiro = new Tiro(tiro_textura);
+		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+			novoTiro.atirar(jacare.getX() + jacare.getWidth() / 2, jacare.getY() + jacare.getHeight());
+			tiros.add(novoTiro);
+			}
+	}
+
+	private void atualiza(){
+		atualizaPedras();
+		atualizaTiros();
+	}
+
+	private void atualizaTiros() {
+		Iterator<Tiro> iterator = tiros.iterator();
+		while (iterator.hasNext()){
+			Tiro tiro = iterator.next();
+			tiro.atualiza(Gdx.graphics.getDeltaTime());
+
+			if(tiro.pegaPosicao().y > Gdx.graphics.getHeight()){
+				iterator.remove();
+			}
+		}
+	}
+
+	private void desenha(){
+		for (Tiro tiro : tiros){
+		tiro.desenha(batch);
+		}
+	}
+
+
+	private void atualizaPedras() {
+		List<Pedra> pedrasNaoAtingidas = new ArrayList<>();
+	
+		for (int i = 0; i < pedras.length; i++) {
+			Pedra pedra = pedras[i];
+			if (pedra != null) {
+				pedra.atualizar(Gdx.graphics.getDeltaTime());
+				pedra.desenhar(batch);
+	
+				Iterator<Tiro> tiroIterator = tiros.iterator();
+				boolean colidiu = false;
+	
+				while (tiroIterator.hasNext()) {
+					Tiro tiro = tiroIterator.next();
+					if (tiro.getBoundingRectangle().overlaps(pedra.getSprite().getBoundingRectangle())) {
+						tiroIterator.remove();
+						colidiu = true;
+						break;
+					}
+				}
+	
+				if (!colidiu) {
+					pedrasNaoAtingidas.add(pedra);
+				} else {
+					// Adicione uma nova pedra no topo da tela
+					float x = MathUtils.random(0, 1280);
+					float y = Gdx.graphics.getHeight() + MathUtils.random(640, 5000);
+					float velocidade = MathUtils.random(50, 200);
+	
+					pedras[i] = new Pedra(pedra_textura, x, y, velocidade);
+				}
+			}
+		}
+	
+		pedras = pedrasNaoAtingidas.toArray(new Pedra[0]);
 	}
 
 	// detecta colisoes entre duas sprites
