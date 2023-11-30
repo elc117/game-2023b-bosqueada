@@ -15,12 +15,14 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.Game;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.w3c.dom.Text;
+
 
 public class Bosqueada extends ApplicationAdapter {
 
@@ -48,6 +50,8 @@ public class Bosqueada extends ApplicationAdapter {
 	Texture botao_alternativa;
 	Texture botao_alternativa_errada;
 	Texture botao_alternativa_exata;
+
+	private Menu menu;
 
 	BitmapFont fonte_pontos;
 	int pontos = 0;
@@ -80,6 +84,9 @@ public class Bosqueada extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
+
+		// cria um menu
+		menu = new Menu();
 
 		// batch
 		batch = new SpriteBatch();
@@ -157,6 +164,9 @@ public class Bosqueada extends ApplicationAdapter {
 
 	@Override
 	public void render() {
+		if (!menu.isJogoIniciado()) {
+			menu.render();
+		} else {
 		ScreenUtils.clear(babyBlue);
 
 		// pega a cordenada do mouse dentro do loop do game
@@ -410,9 +420,11 @@ public class Bosqueada extends ApplicationAdapter {
             batch.begin();
             batch.draw(texturaPausada, 0, 0);
             batch.end();
-        }
+			}
+		}
+    }
 
-	}
+	
 	
 	@Override
 	public void dispose() {
@@ -423,13 +435,13 @@ public class Bosqueada extends ApplicationAdapter {
 		frameBuffer.dispose();
 		tiro_textura.dispose();
 		fonte_pontos.dispose();
+		menu.dispose();
         if (texturaPausada != null) {
             texturaPausada.dispose();
         }
 		gerador.dispose();
 		arma_textura.dispose();
 	}
-
 
 	// movimento do jaca
 	private void moveJacare(){
