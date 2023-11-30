@@ -27,30 +27,31 @@ public class Bosqueada extends ApplicationAdapter {
 	Texture pedra_textura;
 	Texture background2;
 	Sprite jacare;
+	Sprite arma_sprite;
 	FrameBuffer frameBuffer;
 	Texture texturaPausada;
 	FreeTypeFontGenerator gerador;
     FreeTypeFontGenerator.FreeTypeFontParameter parametro;
 	Texture caixaPerguntas_textura;
+	
+	Texture arma_textura;
+	Ak47 arma;
+
 	Texture tiro_textura;
-	Texture botao_alternativa;
-	Texture botao_alternativa_exata;
-	Texture botao_alternativa_errada;
 	Tiro tiro;
+	List<Tiro> tiros;
 	
 	Texture botao_sair;
 	Texture botao_alternativa;
 	Texture botao_alternativa_errada;
 	Texture botao_alternativa_exata;
 
-	List<Tiro> tiros;
-	
-
 	// cria o vetor de pedras
 	Pedra[] pedras;
 
 	CaixaPerguntas pergunta;
 
+	boolean arma_virada_esquerda = true;
 	boolean virado_esquerda = true;
 	boolean pause = false;
 	boolean menu_inicio = true;
@@ -59,6 +60,8 @@ public class Bosqueada extends ApplicationAdapter {
 	int contador_auxiliar_caminhada = 0;
 	int nivel = 1;
 	int pedras_quantidade = nivel * 50;
+
+	float disparoX, disparoY;
 
 	// cores
 	Color babyBlue = new Color(0.678f, 0.847f, 0.902f, 1f);
@@ -89,17 +92,23 @@ public class Bosqueada extends ApplicationAdapter {
 		// textura das arvores de fundo
 		chao = new Texture("texturas/background2.jpg");
 
-		tiro_textura = new Texture("texturas/tiro.png");
-
-		tiro = new Tiro(tiro_textura);
-
-		tiros = new ArrayList<>();
-
 		// criando o jacare
 		jacare = new Sprite(jacare_textura);
 
 		// definindo a posicao inicial
 		jacare.setPosition(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/6 + 20);
+
+		arma_textura = new Texture("texturas/ak.png");
+
+		arma = new Ak47(arma_textura, arma_sprite, jacare.getX(), jacare.getY());
+
+		arma_sprite = new Sprite(arma_textura);
+
+		tiro_textura = new Texture("texturas/tiro.png");
+
+		tiro = new Tiro(tiro_textura, jacare.getX(), jacare.getY());
+
+		tiros = new ArrayList<>();
 
 		pedras = new Pedra[pedras_quantidade];
 
@@ -127,9 +136,9 @@ public class Bosqueada extends ApplicationAdapter {
 		ScreenUtils.clear(babyBlue);
 
 		// pega a cordenada do mouse dentro do loop do game
-		int mouseX = Gdx.input.getX();
+		float mouseX = Gdx.input.getX();
 		// Inverte a coordenada y para ficar de acordo com a libgdx
-		int mouseY = Gdx.graphics.getHeight() - Gdx.input.getY(); 
+		float mouseY = Gdx.graphics.getHeight() - Gdx.input.getY(); 
 
 		// pega o deltaTime
 		float deltaTime = Gdx.graphics.getDeltaTime();
@@ -189,9 +198,42 @@ public class Bosqueada extends ApplicationAdapter {
         		Gdx.app.exit(); 
     		}
 
-			handleInput();
+			
+
+			// desenha e atualiza tiro e pedra
 			atualiza();
 			desenha();
+			
+			// se arma nao direita, arma direita
+			if(mouseX > jacare.getX() &&
+			   arma_virada_esquerda &&
+			   Gdx.input.isButtonPressed(Input.Buttons.LEFT) ){
+				arma_sprite.flip(true,false);
+				arma_virada_esquerda = false;
+			}
+			// se arma nao esquerda, arma esquerda
+			if(mouseX < jacare.getX() &&
+			   !arma_virada_esquerda &&
+			   Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+				arma_sprite.flip(true,false);
+				arma_virada_esquerda = true;
+			   }
+			// atualiza arma e tiro pra esquerda
+			if(arma_virada_esquerda){
+				arma.atualizaArma(jacare.getX() + jacare.getWidth()/4 - 20, jacare.getY() + jacare.getHeight()/2 + 20, arma_sprite);
+				disparoX = jacare.getX() + jacare.getWidth()/4 - 20;
+				disparoY = jacare.getY() + jacare.getHeight()/2 + 20;
+
+				// atualiza arma e tiro pra direita
+			}else{
+				arma.atualizaArma(jacare.getX() + jacare.getWidth()/4 + 30, jacare.getY() + jacare.getHeight()/2 + 20, arma_sprite);
+				disparoX = jacare.getX() + jacare.getWidth()/4 + 60;
+				disparoY = jacare.getY() + jacare.getHeight()/2 + 15;
+			}
+
+			handleInput(mouseX, mouseY, disparoX, disparoY);
+
+			arma.desenha(batch, arma_sprite);
 
 		// se estiver pausado, salva o estado atual no buffer
 		}else if(pause && menu_pergunta){
@@ -310,6 +352,7 @@ public class Bosqueada extends ApplicationAdapter {
             texturaPausada.dispose();
         }
 		gerador.dispose();
+		arma_textura.dispose();
 	}
 
 
@@ -374,12 +417,13 @@ public class Bosqueada extends ApplicationAdapter {
         }
 	}
 
-	private void handleInput(){
-		Tiro novoTiro = new Tiro(tiro_textura);
-		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
-			novoTiro.atirar(jacare.getX() + jacare.getWidth() / 2, jacare.getY() + jacare.getHeight());
+	private void handleInput(float mouseX, float mouseY, float disparoX, float disparoY){
+		// cria o tiro, com sua posicao e textura
+		Tiro novoTiro = new Tiro(tiro_textura, disparoX, disparoY);
+		if( Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+			novoTiro.atirarMouse(mouseX, mouseY);
 			tiros.add(novoTiro);
-			}
+		}
 	}
 
 	private void atualiza(){

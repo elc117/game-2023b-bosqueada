@@ -24,7 +24,7 @@ public class CaixaPerguntas {
     private String[] questoes_count;
     private String pergunta;
     private String[] alternativas;
-    private String linha_resposta;
+    private String linha_resposta = "\0";
     private char resposta;
     private String[] partes;
     private int contador = 0;
@@ -66,7 +66,7 @@ public class CaixaPerguntas {
 
         // quantas questoes sao
         questoes_quantidade = questoesSeparadas.length;
-        int random_questao = MathUtils.random(1, questoes_quantidade);
+        int random_questao = MathUtils.random(0, questoes_quantidade-1);
 
         String questao = questoesSeparadas[random_questao];
 
