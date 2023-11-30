@@ -181,9 +181,6 @@ public class Bosqueada extends ApplicationAdapter {
 			// opacidade volta ao normal
 			batch.setColor(1, 1, 1, 1f); 
 
-			// pergunta
-    		pergunta.desenhar(batch);
-
 			// checa se acertou a questao
 			// primeiro botao
 			if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
@@ -233,8 +230,10 @@ public class Bosqueada extends ApplicationAdapter {
 						batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 900);
 						espera(2);
 					}
-
 			}
+
+			// pergunta
+    		pergunta.desenhar(batch);
 
 			// botao sair
 			batch.draw(botao_sair, Gdx.graphics.getWidth() - botao_sair.getWidth(), Gdx.graphics.getHeight() - botao_sair.getHeight());
