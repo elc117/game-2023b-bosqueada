@@ -87,7 +87,6 @@ public class CaixaPerguntas {
     }
 
     public char resposta_correta(){
-        System.out.println(resposta);
         return resposta;
     }
 

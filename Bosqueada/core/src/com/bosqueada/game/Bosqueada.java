@@ -190,11 +190,12 @@ public class Bosqueada extends ApplicationAdapter {
 				mouseX >= 20 && mouseX <= 20 + botao_alternativa.getWidth() &&
         	    mouseY >= Gdx.graphics.getHeight() - 500 && 
 				mouseY <= Gdx.graphics.getHeight() - 500 + botao_alternativa.getHeight()){
-				// resposta = a
+				// se estiver certo
 				if(pergunta.resposta_correta() == 'a'){
 					// desenha um botao verde
 					batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 500);
 					espera(2);
+				// se estiver errado
 				}else{
 					// desenha um botao vermelho
 					batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 500);
@@ -205,10 +206,12 @@ public class Bosqueada extends ApplicationAdapter {
 					mouseX >= 20 && mouseX <= 20 + botao_alternativa.getWidth() &&
 					mouseY >= Gdx.graphics.getHeight() - 700 &&
 					mouseY <= Gdx.graphics.getHeight() - 700 + botao_alternativa.getHeight()){
+					// se estiver certo
 					if(pergunta.resposta_correta() == 'b'){
 						// desenha um botao verde
 						batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 700);
 						espera(2);
+					// se estiver errado
 					}else{
 						// desenha um botao vermelho
 						batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 700);
@@ -219,10 +222,12 @@ public class Bosqueada extends ApplicationAdapter {
 					mouseX >= 20 && mouseX <= 20 + botao_alternativa.getWidth() &&
 					mouseY >= Gdx.graphics.getHeight() - 900 &&
 					mouseY <= Gdx.graphics.getHeight() - 900 + botao_alternativa.getHeight()){
+					// se estiver certo
 					if(pergunta.resposta_correta() == 'c'){
 						// desenha um botao verde
 						batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 900);
 						espera(2);
+					// se estiver errado
 					}else{
 						// desenha um botao vermelho
 						batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 900);
