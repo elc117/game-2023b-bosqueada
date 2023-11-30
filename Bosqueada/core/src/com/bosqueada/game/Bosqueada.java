@@ -18,6 +18,9 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 
 // cronometro
 import java.util.Timer;
@@ -28,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.w3c.dom.Text;
+
 
 public class Bosqueada extends ApplicationAdapter {
 
@@ -59,6 +63,11 @@ public class Bosqueada extends ApplicationAdapter {
 	Texture botao_alternativa_errada;
 	Texture botao_alternativa_exata;
 
+	private Menu menu;
+	private Music musicaMenu;
+
+	private Sound somTiro;
+
 	BitmapFont fonte_pontos;
 	int pontos = 0;
 	
@@ -80,6 +89,7 @@ public class Bosqueada extends ApplicationAdapter {
 	Texture municao_textura;
 	BitmapFont fonte_municao;
 	int municao_quantidade = 30;
+	private boolean teclaAtiraPressionada = false;
 
 	int contador_auxiliar_caminhada = 0;
 	int pedras_quantidade = 500;
@@ -91,6 +101,14 @@ public class Bosqueada extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
+		musicaMenu = Gdx.audio.newMusic(Gdx.files.internal("audio/astronauta.mp3"));
+        musicaMenu.setLooping(true); // Para reprodução contínua
+        musicaMenu.play();
+
+		somTiro = Gdx.audio.newSound(Gdx.files.internal("audio/somtiro.mp3"));
+
+		// cria um menu
+		menu = new Menu();
 
 		// batch
 		batch = new SpriteBatch();
@@ -166,8 +184,13 @@ public class Bosqueada extends ApplicationAdapter {
 
 		// Inicialize as pedras com diferentes posicoes e velocidades
         for (int i = 0; i < pedras_quantidade; i++) {
+<<<<<<< HEAD
             float x = MathUtils.random(0, 1280);
 			float y = Gdx.graphics.getHeight() + MathUtils.random(640, 20000);
+=======
+            float x = MathUtils.random(0, Gdx.graphics.getWidth());
+			float y = Gdx.graphics.getHeight() + MathUtils.random(640, 5000);
+>>>>>>> 36a01570114e25c90b8f57c564eadb1104e14256
             float velocidade = MathUtils.random(100, 300);
 
             pedras[i] = new Pedra(pedra_textura, x, y, velocidade);
@@ -180,6 +203,9 @@ public class Bosqueada extends ApplicationAdapter {
 
 	@Override
 	public void render() {
+		if (!menu.isJogoIniciado()) {
+			menu.render();
+		} else {
 		ScreenUtils.clear(babyBlue);
 
 		// pega a cordenada do mouse dentro do loop do game
@@ -335,13 +361,13 @@ public class Bosqueada extends ApplicationAdapter {
 					}
 		 		// atualiza arma e tiro pra esquerda
 		 		if(arma_virada_esquerda){
-					 arma.atualizaArma(jacare.getX() + jacare.getWidth()/4 - 20, jacare.getY() + jacare.getHeight()/2 + 20, arma_sprite);
+					 arma.atualizaArma(jacare.getX() + jacare.getWidth()/4 - 30, jacare.getY() + jacare.getHeight()/2 + 20, arma_sprite);
 					 disparoX = jacare.getX() + jacare.getWidth()/4 - 20;
 					 disparoY = jacare.getY() + jacare.getHeight()/2 + 20;
 				
 				// atualiza arma e tiro pra direita
 		 		}else{
-					 arma.atualizaArma(jacare.getX() + jacare.getWidth()/4 + 30, jacare.getY() + jacare.getHeight()/2 + 20, arma_sprite);
+					 arma.atualizaArma(jacare.getX() + jacare.getWidth()/4 + 40, jacare.getY() + jacare.getHeight()/2 + 20, arma_sprite);
 					 disparoX = jacare.getX() + jacare.getWidth()/4 + 60;
 					 disparoY = jacare.getY() + jacare.getHeight()/2 + 15;
 		 		}
@@ -453,11 +479,22 @@ public class Bosqueada extends ApplicationAdapter {
             batch.begin();
             batch.draw(texturaPausada, 0, 0);
             batch.end();
+<<<<<<< HEAD
         }
 	}
+=======
+			}
+		}
+    }
+
+	
+>>>>>>> 36a01570114e25c90b8f57c564eadb1104e14256
 	
 	@Override
 	public void dispose() {
+		if (musicaMenu != null) {
+			musicaMenu.dispose();
+		}
 		batch.dispose();
 		chao.dispose();
 		jacare.getTexture().dispose();
@@ -465,6 +502,7 @@ public class Bosqueada extends ApplicationAdapter {
 		frameBuffer.dispose();
 		tiro_textura.dispose();
 		fonte_pontos.dispose();
+		menu.dispose();
         if (texturaPausada != null) {
             texturaPausada.dispose();
         }
@@ -473,7 +511,6 @@ public class Bosqueada extends ApplicationAdapter {
 		municao_textura.dispose();
 		
 	}
-
 
 	// movimento do jaca
 	public void moveJacare(){
@@ -539,13 +576,22 @@ public class Bosqueada extends ApplicationAdapter {
 	private void handleInput(float mouseX, float mouseY, float disparoX, float disparoY, int _quantidade){
 		// cria o tiro, com sua posicao e textura
 		Tiro novoTiro = new Tiro(tiro_textura, disparoX, disparoY);
-		if( Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+		if( Gdx.input.isButtonPressed(Input.Buttons.LEFT) && !teclaAtiraPressionada){
+			teclaAtiraPressionada = true;
 			novoTiro.atirarMouse(mouseX, mouseY);
 			tiros.add(novoTiro);
+
+			if (somTiro != null) {
+                somTiro.play();
+            }
 			// diminui uma municao por cada disparo
 			if(municao_quantidade > 0){
 				municao_quantidade--;
 			}
+		}
+
+		if (!Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+			teclaAtiraPressionada = false;
 		}
 	}
 
