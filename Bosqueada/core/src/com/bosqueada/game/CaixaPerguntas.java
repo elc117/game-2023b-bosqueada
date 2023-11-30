@@ -24,7 +24,8 @@ public class CaixaPerguntas {
     private String[] questoes_count;
     private String pergunta;
     private String[] alternativas;
-    private String resposta;
+    private String linha_resposta;
+    private char resposta;
     private String[] partes;
     private int contador = 0;
     public int questoes_quantidade = 0;
@@ -78,11 +79,14 @@ public class CaixaPerguntas {
             alternativas[0] = partes[2];
             alternativas[1] = partes[3];
             alternativas[2] = partes[4];
-            resposta = partes[5];
+            linha_resposta = partes[5];
         }
+        // pega apenas a resposta, para comparar
+        // por que eu peguei o index 2? fui tentiando e deu
+        resposta = linha_resposta.charAt(2);
     }
 
-    public String resposta_correta(){
+    public char resposta_correta(){
         System.out.println(resposta);
         return resposta;
     }
