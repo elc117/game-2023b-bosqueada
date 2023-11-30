@@ -39,6 +39,9 @@ public class Bosqueada extends ApplicationAdapter {
 	Tiro tiro;
 	
 	Texture botao_sair;
+	Texture botao_alternativa;
+	Texture botao_alternativa_errada;
+	Texture botao_alternativa_exata;
 
 	List<Tiro> tiros;
 	
