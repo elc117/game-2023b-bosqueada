@@ -3,6 +3,7 @@ package com.bosqueada.game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 
 public class Pedra {
     private Sprite pedra_sprite;
@@ -20,6 +21,11 @@ public class Pedra {
         return pedra_sprite;
     }
 
+    // pega o hitbox da pedra
+    public Rectangle getBoundingRectangle(){
+        return pedra_sprite.getBoundingRectangle();
+    }
+
     public void atualizar(float deltaTime) {
         // Atualiza a posição da pedra com base na velocidade
         float novaPosicaoY = pedra_sprite.getY() - velocidade * deltaTime;
@@ -30,4 +36,5 @@ public class Pedra {
     public void desenhar(SpriteBatch batch) {
         pedra_sprite.draw(batch);
     }
+
 }
