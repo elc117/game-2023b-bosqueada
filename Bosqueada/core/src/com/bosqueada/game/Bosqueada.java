@@ -36,9 +36,6 @@ public class Bosqueada extends ApplicationAdapter {
     FreeTypeFontGenerator.FreeTypeFontParameter parametro;
 	Texture caixaPerguntas_textura;
 	Texture tiro_textura;
-	Texture botao_alternativa;
-	Texture botao_alternativa_exata;
-	Texture botao_alternativa_errada;
 	Tiro tiro;
 	
 	Texture botao_sair;
@@ -188,7 +185,7 @@ public class Bosqueada extends ApplicationAdapter {
 			// Desenha o texto "Pontos: " seguido pelo valor da variável 'pontos' na tela
 			fonte_pontos.draw(batch, "Pontos: " + pontos, x, y);
 
-			
+
 			// Atualiza e desenha as pedras
         	for (Pedra pedra : pedras) {
         	    pedra.atualizar(deltaTime);
