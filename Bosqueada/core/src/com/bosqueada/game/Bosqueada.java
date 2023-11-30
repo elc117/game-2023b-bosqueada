@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.audio.Music;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -52,6 +53,7 @@ public class Bosqueada extends ApplicationAdapter {
 	Texture botao_alternativa_exata;
 
 	private Menu menu;
+	private Music musicaMenu;
 
 	BitmapFont fonte_pontos;
 	int pontos = 0;
@@ -84,6 +86,9 @@ public class Bosqueada extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
+		musicaMenu = Gdx.audio.newMusic(Gdx.files.internal("audio/astronauta.mp3"));
+        musicaMenu.setLooping(true); // Para reprodução contínua
+        musicaMenu.play();
 
 		// cria um menu
 		menu = new Menu();
@@ -428,6 +433,9 @@ public class Bosqueada extends ApplicationAdapter {
 	
 	@Override
 	public void dispose() {
+		if (musicaMenu != null) {
+			musicaMenu.dispose();
+		}
 		batch.dispose();
 		chao.dispose();
 		jacare.getTexture().dispose();
