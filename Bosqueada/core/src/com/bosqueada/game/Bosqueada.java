@@ -49,15 +49,9 @@ public class Bosqueada extends ApplicationAdapter {
 	Texture botao_alternativa_errada;
 	Texture botao_alternativa_exata;
 
-<<<<<<< HEAD
-=======
 	BitmapFont fonte_pontos;
 	int pontos = 0;
-
-	List<Tiro> tiros;
 	
-
->>>>>>> 51ebb46e05fa1449204c9d86c25128e5efd359c3
 	// cria o vetor de pedras
 	Pedra[] pedras;
 
@@ -104,17 +98,8 @@ public class Bosqueada extends ApplicationAdapter {
 		// textura das arvores de fundo
 		chao = new Texture("texturas/background2.jpg");
 
-<<<<<<< HEAD
-=======
-		tiro_textura = new Texture("texturas/tiro.png");
-
-		tiro = new Tiro(tiro_textura);
-
-		tiros = new ArrayList<>();
-
 		fonte_pontos = new BitmapFont();
 
->>>>>>> 51ebb46e05fa1449204c9d86c25128e5efd359c3
 		// criando o jacare
 		jacare = new Sprite(jacare_textura);
 
@@ -126,6 +111,12 @@ public class Bosqueada extends ApplicationAdapter {
 		arma = new Ak47(arma_textura, arma_sprite, jacare.getX(), jacare.getY());
 
 		arma_sprite = new Sprite(arma_textura);
+
+		tiro_textura = new Texture("texturas/tiro.png");
+
+		tiro = new Tiro(tiro_textura, jacare.getX(), jacare.getY());
+
+		tiros = new ArrayList<>();
 
 		tiro_textura = new Texture("texturas/tiro.png");
 
