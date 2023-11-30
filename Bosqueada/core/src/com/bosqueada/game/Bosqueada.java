@@ -246,9 +246,7 @@ public class Bosqueada extends ApplicationAdapter {
 				if (detectarColisao(jacare, pedra.getSprite())) {
 					// o que acontece quando colide
 					// nesse caso, reseta a posicao do jaca
-					jacare.setPosition(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/6 + 20);
-					// pausa o game
-					pause = true;
+					vida = false;
 				}
         	}
 
@@ -334,6 +332,8 @@ public class Bosqueada extends ApplicationAdapter {
 				if(pergunta.resposta_correta() == 'a'){
 					// desenha um botao verde
 					batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 500);
+					vida = true;
+					pause = false;
 				// se estiver errado
 				}else{
 					// desenha um botao vermelho
@@ -348,6 +348,8 @@ public class Bosqueada extends ApplicationAdapter {
 					if(pergunta.resposta_correta() == 'b'){
 						// desenha um botao verde
 						batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 700);
+						vida = true;
+						pause = false;
 					// se estiver errado
 					}else{
 						// desenha um botao vermelho
@@ -362,6 +364,8 @@ public class Bosqueada extends ApplicationAdapter {
 					if(pergunta.resposta_correta() == 'c'){
 						// desenha um botao verde
 						batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 900);
+						vida = true;
+						pause = false;
 					// se estiver errado
 					}else{
 						// desenha um botao vermelho
@@ -543,6 +547,7 @@ public class Bosqueada extends ApplicationAdapter {
 						tiroIterator.remove();
 						colidiu = true;
 						pontos++;
+						municao_quantidade++;
 						break;
 					}
 				}
