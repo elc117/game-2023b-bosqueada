@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.w3c.dom.Text;
+
 public class Bosqueada extends ApplicationAdapter {
 
 	SpriteBatch batch;
@@ -31,6 +33,9 @@ public class Bosqueada extends ApplicationAdapter {
     FreeTypeFontGenerator.FreeTypeFontParameter parametro;
 	Texture caixaPerguntas_textura;
 	Texture tiro_textura;
+	Texture botao_alternativa;
+	Texture botao_alternativa_exata;
+	Texture botao_alternativa_errada;
 	Tiro tiro;
 	
 	Texture botao_sair;
@@ -104,7 +109,7 @@ public class Bosqueada extends ApplicationAdapter {
         for (int i = 0; i < pedras_quantidade; i++) {
             float x = MathUtils.random(0, 1280);
 			float y = Gdx.graphics.getHeight() + MathUtils.random(640, 5000);
-            float velocidade = MathUtils.random(500, 1000);
+            float velocidade = MathUtils.random(200, 600);
 
             pedras[i] = new Pedra(pedra_textura, x, y, velocidade);
         }
