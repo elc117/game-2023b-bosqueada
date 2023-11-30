@@ -30,13 +30,19 @@ public class Bosqueada extends ApplicationAdapter {
 	Texture pedra_textura;
 	Texture background2;
 	Sprite jacare;
+	Sprite arma_sprite;
 	FrameBuffer frameBuffer;
 	Texture texturaPausada;
 	FreeTypeFontGenerator gerador;
     FreeTypeFontGenerator.FreeTypeFontParameter parametro;
 	Texture caixaPerguntas_textura;
+	
+	Texture arma_textura;
+	Ak47 arma;
+
 	Texture tiro_textura;
 	Tiro tiro;
+	List<Tiro> tiros;
 	
 	Texture botao_sair;
 	Texture botao_alternativa;
@@ -45,23 +51,29 @@ public class Bosqueada extends ApplicationAdapter {
 
 	BitmapFont fonte_pontos;
 	int pontos = 0;
-
-	List<Tiro> tiros;
 	
-
 	// cria o vetor de pedras
 	Pedra[] pedras;
 
 	CaixaPerguntas pergunta;
 
+	boolean arma_virada_esquerda = true;
 	boolean virado_esquerda = true;
 	boolean pause = false;
-	boolean menu_inicio = true;
-	boolean menu_pergunta = true;
+	boolean menu_inicio = false;
+	boolean menu_pergunta = false;
+	boolean armado;
+	boolean vida = true;
+
+	Sprite municao;
+	Texture municao_textura;
+	BitmapFont fonte_municao;
+	int municao_quantidade = 30;
 
 	int contador_auxiliar_caminhada = 0;
-	int nivel = 1;
-	int pedras_quantidade = nivel * 50;
+	int pedras_quantidade = 50;
+
+	float disparoX, disparoY;
 
 	// cores
 	Color babyBlue = new Color(0.678f, 0.847f, 0.902f, 1f);
@@ -83,6 +95,9 @@ public class Bosqueada extends ApplicationAdapter {
 		botao_alternativa_exata = new Texture("texturas/botao_alternativa_exata.png");
 		botao_alternativa_errada = new Texture("texturas/botao_alternativa_errada.png");
 
+		// textura caixa de municoes
+		municao_textura = new Texture("texturas/caixa_municao.jpeg");
+
 		// textura do personagem
 		jacare_textura = new Texture("texturas/jacare.png");
 
@@ -92,19 +107,32 @@ public class Bosqueada extends ApplicationAdapter {
 		// textura das arvores de fundo
 		chao = new Texture("texturas/background2.jpg");
 
-		tiro_textura = new Texture("texturas/tiro.png");
-
-		tiro = new Tiro(tiro_textura);
-
-		tiros = new ArrayList<>();
-
 		fonte_pontos = new BitmapFont();
+		fonte_municao = new BitmapFont();
 
 		// criando o jacare
 		jacare = new Sprite(jacare_textura);
 
 		// definindo a posicao inicial
 		jacare.setPosition(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/6 + 20);
+
+		arma_textura = new Texture("texturas/ak.png");
+
+		arma = new Ak47(arma_textura, arma_sprite, jacare.getX(), jacare.getY());
+
+		arma_sprite = new Sprite(arma_textura);
+
+		tiro_textura = new Texture("texturas/tiro.png");
+
+		tiro = new Tiro(tiro_textura, jacare.getX(), jacare.getY());
+
+		tiros = new ArrayList<>();
+
+		tiro_textura = new Texture("texturas/tiro.png");
+
+		tiro = new Tiro(tiro_textura, jacare.getX(), jacare.getY());
+
+		tiros = new ArrayList<>();
 
 		pedras = new Pedra[pedras_quantidade];
 
@@ -117,7 +145,7 @@ public class Bosqueada extends ApplicationAdapter {
         for (int i = 0; i < pedras_quantidade; i++) {
             float x = MathUtils.random(0, 1280);
 			float y = Gdx.graphics.getHeight() + MathUtils.random(640, 5000);
-            float velocidade = MathUtils.random(200, 600);
+            float velocidade = MathUtils.random(100, 300);
 
             pedras[i] = new Pedra(pedra_textura, x, y, velocidade);
         }
@@ -132,9 +160,9 @@ public class Bosqueada extends ApplicationAdapter {
 		ScreenUtils.clear(babyBlue);
 
 		// pega a cordenada do mouse dentro do loop do game
-		int mouseX = Gdx.input.getX();
+		float mouseX = Gdx.input.getX();
 		// Inverte a coordenada y para ficar de acordo com a libgdx
-		int mouseY = Gdx.graphics.getHeight() - Gdx.input.getY(); 
+		float mouseY = Gdx.graphics.getHeight() - Gdx.input.getY(); 
 
 		// pega o deltaTime
 		float deltaTime = Gdx.graphics.getDeltaTime();
@@ -158,6 +186,11 @@ public class Bosqueada extends ApplicationAdapter {
 
 		batch.begin();
 
+		if(!vida){
+			menu_pergunta = true;
+			pause = true;
+		}
+
 		// desenha caso nao esteja pausado
 		if(!pause){
 			// fundo
@@ -169,23 +202,41 @@ public class Bosqueada extends ApplicationAdapter {
 			// contador de pontos
 			fonte_pontos.getData().setScale(2);
 
+			// contador de municao
+			fonte_municao.getData().setScale(2);
+
 			// Cria um objeto GlyphLayout para calcular as dimensões do texto
-			GlyphLayout layout = new GlyphLayout(fonte_pontos, "Pontos: " + pontos);
+			GlyphLayout layout_pontos = new GlyphLayout(fonte_pontos, "Pontos: " + pontos);
+
+			// objeto glyphlayout para calcular as dimensoes do texto
+			GlyphLayout layout_municao = new GlyphLayout(fonte_municao, "Municao: " + municao_quantidade);
 
 			// Obtém a largura e altura real do texto com base na fonte e conteúdo
-			float textWidth = layout.width;
-			float textHeight = layout.height;
+			float textoWidth = layout_pontos.width;
+			float textoHeight = layout_pontos.height;
+
+			// obtem a altura real do texto
+			float textoX = layout_municao.width;
+			float textoY = layout_municao.height;
 
 			// Calcula a posição X centralizada na tela
-			float x = (Gdx.graphics.getWidth() - textWidth) / 2;
+			float x = (Gdx.graphics.getWidth() - textoWidth) / 2;
 
 			// Calcula a posição Y na parte superior da tela com um pequeno espaço para baixo (20 pixels)
-			float y = Gdx.graphics.getHeight() - textHeight - 20;
+			float y = Gdx.graphics.getHeight() - textoHeight - 20;
 
 			// Desenha o texto "Pontos: " seguido pelo valor da variável 'pontos' na tela
 			fonte_pontos.draw(batch, "Pontos: " + pontos, x, y);
 
+			// altura da tela - texto pontos - texto municao
+			float X = (Gdx.graphics.getWidth() - textoX)/3;
 
+			// largura da tela - texto pontos - texto municao
+			float Y = (Gdx.graphics.getHeight() - textoY - 20);
+
+			// desenha municao: quantas municoes
+			fonte_municao.draw(batch, "Municao: " + municao_quantidade, X, Y);
+			
 			// Atualiza e desenha as pedras
         	for (Pedra pedra : pedras) {
         	    pedra.atualizar(deltaTime);
@@ -195,9 +246,7 @@ public class Bosqueada extends ApplicationAdapter {
 				if (detectarColisao(jacare, pedra.getSprite())) {
 					// o que acontece quando colide
 					// nesse caso, reseta a posicao do jaca
-					jacare.setPosition(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/6 + 20);
-					// pausa o game
-					pause = true;
+					vida = false;
 				}
         	}
 
@@ -214,9 +263,51 @@ public class Bosqueada extends ApplicationAdapter {
         		Gdx.app.exit(); 
     		}
 
-			handleInput();
+			
+
+			// desenha e atualiza tiro e pedra
 			atualiza();
 			desenha();
+			
+			if(municao_quantidade > 0){
+				armado = true;
+			}else{
+				armado = false;
+			}
+
+			if(armado){
+				// se arma nao direita, arma direita
+				if(mouseX > jacare.getX() &&
+				arma_virada_esquerda &&
+				Gdx.input.isButtonPressed(Input.Buttons.LEFT) ){
+				 arma_sprite.flip(true,false);
+				 arma_virada_esquerda = false;
+		 		}
+		 		// se arma nao esquerda, arma esquerda
+		 		if(mouseX < jacare.getX() &&
+					!arma_virada_esquerda &&
+					Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+					 arma_sprite.flip(true,false);
+					 arma_virada_esquerda = true;
+					}
+		 		// atualiza arma e tiro pra esquerda
+		 		if(arma_virada_esquerda){
+					 arma.atualizaArma(jacare.getX() + jacare.getWidth()/4 - 20, jacare.getY() + jacare.getHeight()/2 + 20, arma_sprite);
+					 disparoX = jacare.getX() + jacare.getWidth()/4 - 20;
+					 disparoY = jacare.getY() + jacare.getHeight()/2 + 20;
+				
+				// atualiza arma e tiro pra direita
+		 		}else{
+					 arma.atualizaArma(jacare.getX() + jacare.getWidth()/4 + 30, jacare.getY() + jacare.getHeight()/2 + 20, arma_sprite);
+					 disparoX = jacare.getX() + jacare.getWidth()/4 + 60;
+					 disparoY = jacare.getY() + jacare.getHeight()/2 + 15;
+		 		}
+			
+		 		handleInput(mouseX, mouseY, disparoX, disparoY, municao_quantidade);
+			
+		 		arma.desenha(batch, arma_sprite);
+			}
+			
 
 		// se estiver pausado, salva o estado atual no buffer
 		}else if(pause && menu_pergunta){
@@ -241,12 +332,12 @@ public class Bosqueada extends ApplicationAdapter {
 				if(pergunta.resposta_correta() == 'a'){
 					// desenha um botao verde
 					batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 500);
-					espera(2);
+					vida = true;
+					pause = false;
 				// se estiver errado
 				}else{
 					// desenha um botao vermelho
 					batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 500);
-					espera(2);
 				}
 			// segundo botao
     		}if(Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
@@ -257,12 +348,12 @@ public class Bosqueada extends ApplicationAdapter {
 					if(pergunta.resposta_correta() == 'b'){
 						// desenha um botao verde
 						batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 700);
-						espera(2);
+						vida = true;
+						pause = false;
 					// se estiver errado
 					}else{
 						// desenha um botao vermelho
 						batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 700);
-						espera(2);
 					}
 			// terceiro botao
 			}if(Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
@@ -273,12 +364,12 @@ public class Bosqueada extends ApplicationAdapter {
 					if(pergunta.resposta_correta() == 'c'){
 						// desenha um botao verde
 						batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 900);
-						espera(2);
+						vida = true;
+						pause = false;
 					// se estiver errado
 					}else{
 						// desenha um botao vermelho
 						batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 900);
-						espera(2);
 					}
 			}
 
@@ -336,6 +427,7 @@ public class Bosqueada extends ApplicationAdapter {
             texturaPausada.dispose();
         }
 		gerador.dispose();
+		arma_textura.dispose();
 	}
 
 
@@ -400,12 +492,17 @@ public class Bosqueada extends ApplicationAdapter {
         }
 	}
 
-	private void handleInput(){
-		Tiro novoTiro = new Tiro(tiro_textura);
-		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
-			novoTiro.atirar(jacare.getX() + jacare.getWidth() / 2, jacare.getY() + jacare.getHeight());
+	private void handleInput(float mouseX, float mouseY, float disparoX, float disparoY, int _quantidade){
+		// cria o tiro, com sua posicao e textura
+		Tiro novoTiro = new Tiro(tiro_textura, disparoX, disparoY);
+		if( Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+			novoTiro.atirarMouse(mouseX, mouseY);
 			tiros.add(novoTiro);
+			// diminui uma municao por cada disparo
+			if(municao_quantidade > 0){
+				municao_quantidade--;
 			}
+		}
 	}
 
 	private void atualiza(){
@@ -450,6 +547,7 @@ public class Bosqueada extends ApplicationAdapter {
 						tiroIterator.remove();
 						colidiu = true;
 						pontos++;
+						municao_quantidade++;
 						break;
 					}
 				}
@@ -474,23 +572,4 @@ public class Bosqueada extends ApplicationAdapter {
 	private boolean detectarColisao(Sprite sprite1, Sprite sprite2) {
 		return sprite1.getBoundingRectangle().overlaps(sprite2.getBoundingRectangle());
 	}
-
-	// faz o programa esperar alguns segundos
-	private void espera(float tempo_de_espera){
-		// Variáveis de controle para temporização
-		float tempoInicial = 0;
-		boolean pause = true;
-		if (pause) {
-			// Verifica quanto tempo passou desde o início do atraso
-			float tempoAtual = Gdx.graphics.getDeltaTime();
-			tempoInicial += tempoAtual;
-		
-		    // Verifica se o tempo de espera foi alcançado
-			if (tempoInicial >= tempo_de_espera) {
-		        // Lógica para quando o tempo de espera terminar
-		        pause = false;
-		    }
-		}
-	}
-}	
-
+}
