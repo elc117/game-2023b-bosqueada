@@ -85,6 +85,7 @@ public class Bosqueada extends ApplicationAdapter {
 	boolean menu_pergunta = false;
 	boolean armado;
 	boolean vida = true;
+	boolean caixaColetada = false;
 
 	Sprite municao;
 	List<Sprite> municoes;
@@ -94,7 +95,7 @@ public class Bosqueada extends ApplicationAdapter {
 	private boolean teclaAtiraPressionada = false;
 
 	int contador_auxiliar_caminhada = 0;
-	int pedras_quantidade = 500;
+	int pedras_quantidade = 110;
 
 	float disparoX, disparoY;
 
@@ -127,7 +128,7 @@ public class Bosqueada extends ApplicationAdapter {
 		botao_alternativa_errada = new Texture("texturas/botao_alternativa_errada.png");
 
 		// textura caixa de municoes
-		municao_textura = new Texture("texturas/caixa_municao.jpg");
+		municao_textura = new Texture("texturas/caixa_municao.png");
 
 		// municao sprite
 		municao = new Sprite(municao_textura);
@@ -142,9 +143,9 @@ public class Bosqueada extends ApplicationAdapter {
 				
 			}
 		};
-		// 5 a 5 segundos para cair o drop
-		int milissegundos = MathUtils.random(5000, 15000);
-		cronometro.schedule(tarefa, milissegundos);
+		// caixa cai depois de 60 segundos
+		int segundos = MathUtils.random(60, 180);
+		cronometro.schedule(tarefa, segundos);
 
 		// textura do personagem
 		jacare_textura = new Texture("texturas/jacare.png");
@@ -318,17 +319,21 @@ public class Bosqueada extends ApplicationAdapter {
 			// desenha e atualiza tiro e pedra
 			atualiza();
 			desenha();
-			municao.draw(batch);
+			if (!caixaColetada) {
+				municao.draw(batch);
+			}
+		
 
 			// faz a caixa de municao cair até o chao do jaca
-			if(municao.getY() > Gdx.graphics.getHeight()/6 + 20){
-				municao.setY(municao.getY()-100);
+			if(municao.getY() > Gdx.graphics.getHeight() / 6 + 20 && pontos > 75){
+				municao.setY(municao.getY()- 1);
 			}
 
-			// detecta colisao com a caixa
-			if(detectarColisao(jacare, municao)){
-				// adiciona municao a municoes quando chegar ao solo
-				municoes.add(municao);
+			// faz com que o player possa coletar a municao apenas uma  vez
+			if (!caixaColetada && detectarColisao(jacare, municao)) {
+				//adiciona municao e marca a caixa como coletada
+				municao_quantidade += 10;
+				caixaColetada = true;
 			}
 
 			Iterator<Sprite> iterador_municao = municoes.iterator();
@@ -640,7 +645,7 @@ public class Bosqueada extends ApplicationAdapter {
 						pontos++;
 						municao_quantidade++;
 	
-						// Adiciona três novas pedras quando um tiro acerta
+						// adiciona três novas pedras quando um tiro acerta
 						for (int j = 0; j < 3; j++) {
 							float x = MathUtils.random(0, Gdx.graphics.getWidth());
 							float y = Gdx.graphics.getHeight() + MathUtils.random(640, 5000);
@@ -663,12 +668,12 @@ public class Bosqueada extends ApplicationAdapter {
 	
 
 	private void spawnNovaPedra() {
-        // Adicione uma nova pedra no topo da tela
+        // adiciona uma nova pedra no topo da tela
         float x = MathUtils.random(0, Gdx.graphics.getWidth());
         float y = Gdx.graphics.getHeight() + MathUtils.random(640, 5000);
         float velocidade = MathUtils.random(50, 200);
 
-        // Encontre um slot vazio no array de pedras
+        // encontra um slot vazio no array de pedras
         for (int i = 0; i < pedras.length; i++) {
             if (pedras[i] == null) {
                 pedras[i] = new Pedra(pedra_textura, x, y, velocidade);
