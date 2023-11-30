@@ -1,120 +1,159 @@
-Qual paradigma de programação enfatiza a reutilização de código e a decomposição de um problema em partes menores e mais gerenciáveis?
-Procedural
-Orientado a Objetos
-Funcional
-b
-@
-Em qual paradigma de programação os programas são construídos em torno do conceito de "funções puras" e evitam efeitos colaterais?
-Procedural
-Lógico
-Funcional
-c
-@
-Qual paradigma de programação se concentra na lógica e nas regras aplicadas para resolver problemas?
-Lógico
-Orientado a Objetos
-Imperativo
-a
-@
-Qual paradigma de programação se concentra em decompor um programa em um conjunto de procedimentos ou funções, enfatizando a sequência de passos para alcançar um objetivo?
-Procedural
-Funcional
-Orientado a Objetos
-a
-@
-Em qual paradigma de programação as funções são tratadas como valores e podem ser passadas como argumentos e retornadas como resultados de outras funções?
-Lógico
-Funcional
-Concorrente
-b
-@
-Qual paradigma de programação se baseia na lógica matemática e utiliza regras para inferir respostas a partir de fatos e regras estabelecidas?
-Orientado a Objetos
-Concorrente
-Lógico
-c
-@
-Em qual paradigma de programação os objetos são entidades que possuem dados e comportamentos, e a interação entre eles é realizada por meio de mensagens?
-Orientado a Objetos
-Procedural
-Concorrente
-a
-@
-Qual paradigma de programação se concentra na execução simultânea de múltiplas tarefas ou processos independentes?
-Lógico
-Funcional
-Concorrente
-c
-@
-Qual paradigma de programação enfatiza a manipulação de threads e processos independentes para resolver problemas de concorrência?
-Concorrente
-Procedural
-Funcional
-a
-@
-Em qual paradigma de programação os programas são construídos em torno da composição de funções puras e evitam estados compartilhados e efeitos colaterais?
-Lógico
-Orientado a Objetos
-Funcional
-c
-@
-Qual paradigma de programação se concentra na representação de problemas em termos de regras e fatos?
-Concorrente
-Lógico
-Orientado a Objetos
-b
-@
-Em qual paradigma de programação a estrutura do programa é baseada em objetos que podem conter dados na forma de campos e comportamentos na forma de métodos?
-Procedural
-Funcional
-Orientado a Objetos
-c
-@
-Qual paradigma de programação se concentra na decomposição de um programa em um conjunto de procedimentos ou funções, enfatizando a sequência de passos para alcançar um objetivo?
-Procedural
-Concorrente
-Funcional
-a
-@
-Em qual paradigma de programação os programas são estruturados em torno da execução simultânea de múltiplas tarefas que podem ser assíncronas ou síncronas?
-Concorrente
-Funcional
-Lógico
-a
-@
-Qual paradigma de programação utiliza a lógica matemática para resolver problemas através de regras de inferência e fatos?
-Lógico
-Funcional
-Orientado a Objetos
-a
-@
-Em qual paradigma de programação os programas são estruturados em torno da composição de funções que recebem entradas e produzem saídas sem efeitos colaterais?
-Concorrente
-Funcional
-Procedural
-b
-@
-Qual paradigma de programação se concentra na modelagem de problemas em termos de entidades que possuem dados e comportamentos?
-Lógico
-Orientado a Objetos
-Procedural
-b
-@
-Em qual paradigma de programação os programas são estruturados em torno da definição de relações lógicas entre fatos e regras para inferir novos fatos?
-Lógico
-Funcional
-Concorrente
-a
-@
-Qual paradigma de programação enfatiza a execução de múltiplos fluxos de controle em um programa e pode ser implementado utilizando, por exemplo, threads?
-Orientado a Objetos
-Concorrente
-Procedural
-b
-@
-Em qual paradigma de programação os programas são estruturados em torno de funções puras, imutabilidade de dados e evitam efeitos colaterais?
-Lógico
-Concorrente
-Funcional
-c
-@
+Qual paradigma de programacao enfatiza a reutilizacao 
+de codigo e a decomposicao de um problema em
+partes menores e mais gerenciaveis?;
+Procedural;
+Orientado a Objetos;
+Funcional;
+b;
+@;
+Em qual paradigma de programacao os programas sao 
+construidos em torno do conceito de "funcoes puras" 
+e evitam efeitos colaterais?;
+Procedural;
+Logico;
+Funcional;
+c;
+@;
+Qual paradigma de programacao se concentra na logica 
+e nas regras aplicadas para resolver problemas?;
+Logico;
+Orientado a Objetos;
+Imperativo;
+a;
+@;
+Qual paradigma de programacao se concentra em decompor 
+um programa em um conjunto de procedimentos 
+ou funcoes, enfatizando a sequencia de passos para alcancar um objetivo?;
+Procedural;
+Funcional;
+Orientado a Objetos;
+a;
+@;
+Em qual paradigma de programacao as funcoes sao 
+tratadas como valores e podem ser passadas como 
+argumentos e retornadas como resultados de outras funcoes?;
+Logico;
+Funcional;
+Concorrente;
+b;
+@;
+Qual paradigma de programacao se baseia na logica 
+matematica e utiliza regras para inferir respostas 
+a partir de fatos e regras estabelecidas?;
+Orientado a Objetos;
+Concorrente;
+Logico;
+c;
+@;
+Em qual paradigma de programacao os objetos sao 
+entidades que possuem dados e comportamentos, 
+e a interacao entre eles e realizada por meio de mensagens?;
+Orientado a Objetos;
+Procedural;
+Concorrente;
+a;
+@;
+Qual paradigma de programacao se concentra na execucao 
+simultanea de multiplas tarefas ou processos 
+independentes?;
+Logico;
+Funcional;
+Concorrente;
+c;
+@;
+Qual paradigma de programacao enfatiza a manipulacao 
+de threads e processos independentes para 
+resolver problemas de concorrencia?;
+Concorrente;
+Procedural;
+Funcional;
+a;
+@;
+Em qual paradigma de programacao os programas sao 
+construidos em torno da composicao de funcoes 
+puras e evitam estados compartilhados e efeitos colaterais?;
+Logico;
+Orientado a Objetos;
+Funcional;
+c;
+@;
+Qual paradigma de programacao se concentra na representacao 
+de problemas em termos de regras e fatos?;
+Concorrente;
+Logico;
+Orientado a Objetos;
+b;
+@;
+Em qual paradigma de programacao a estrutura do 
+programa e baseada em objetos que podem conter 
+dados na forma de campos e comportamentos na forma de metodos?;
+Procedural;
+Funcional;
+Orientado a Objetos;
+c;
+@;
+Qual paradigma de programacao se concentra na 
+decomposicao de um programa em um conjunto de 
+procedimentos ou funcoes, enfatizando a sequencia de 
+passos para alcancar um objetivo?;
+Procedural;
+Concorrente;
+Funcional;
+a;
+@;
+Em qual paradigma de programacao os programas sao 
+estruturados em torno da execucao simultanea de 
+multiplas tarefas que podem ser assincronas ou sincronas?;
+Concorrente;
+Funcional;
+Logico;
+a;
+@;
+Qual paradigma de programacao utiliza a logica 
+matematica para resolver problemas atraves de regras 
+de inferencia e fatos?;
+Logico;
+Funcional;
+Orientado a Objetos;
+a;
+@;
+Em qual paradigma de programacao os programas sao 
+estruturados em torno da composicao de funcoes que 
+recebem entradas e produzem saidas sem efeitos colaterais?;
+Concorrente;
+Funcional;
+Procedural;
+b;
+@;
+Qual paradigma de programacao se concentra na modelagem 
+de problemas em termos de entidades que possuem 
+dados e comportamentos?;
+Logico;
+Orientado a Objetos;
+Procedural;
+b;
+@;
+Em qual paradigma de programacao os programas sao 
+estruturados em torno da definicao de relacoes logicas 
+entre fatos e regras para inferir novos fatos?;
+Logico;
+Funcional;
+Concorrente;
+a;
+@;
+Qual paradigma de programacao enfatiza a execucao de 
+multiplos fluxos de controle em um programa e pode 
+ser implementado utilizando, por exemplo, threads?;
+Orientado a Objetos;
+Concorrente;
+Procedural;
+b;
+@;
+Em qual paradigma de programacao os programas sao 
+estruturados em torno da composicao de funcoes puras, 
+imutabilidade de dados e evitam efeitos colaterais?;
+Logico;
+Concorrente;
+Funcional;
+c;
+@;

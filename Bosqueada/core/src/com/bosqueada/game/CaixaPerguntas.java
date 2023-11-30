@@ -5,13 +5,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Bitmap;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
 public class CaixaPerguntas {
 
+    FreeTypeFontGenerator gerador;
+    FreeTypeFontGenerator.FreeTypeFontParameter parametro;
+    
     private Sprite caixaPergunta_sprite;
     private BitmapFont fonte_pergunta;
     private BitmapFont fonte_alternativas;
@@ -19,27 +24,37 @@ public class CaixaPerguntas {
     private String[] questoes_count;
     private String pergunta;
     private String[] alternativas;
-    private String resposta;
+    private String linha_resposta;
+    private char resposta;
     private String[] partes;
     private int contador = 0;
     public int questoes_quantidade = 0;
+
     // posicao da pergunta na tela
-    private int posPerguntaX = 100;
-    private int posPerguntaY = 500;
+    private int posPerguntaX = 20;
+    private int posPerguntaY = Gdx.graphics.getHeight() - 100;
 
-    public CaixaPerguntas(BitmapFont fonte_pergunta, BitmapFont fonte_alternativa, Texture caixaPergunta_textura){
-        this.fonte_pergunta = fonte_pergunta;
-        this.fonte_pergunta.setColor(Color.BLACK);
-        this.fonte_pergunta.getData().setScale(1.5f);
+    public CaixaPerguntas(FreeTypeFontGenerator gerador, FreeTypeFontGenerator.FreeTypeFontParameter parametro){
+        // tamanho da fonte
+        parametro.size = 30;
+        // cor preto
+        parametro.color.set(0.2196f, 0.5412f, 0.2471f, 1f);
+        // parametro borda
+        parametro.borderWidth = 2;
+        // borda cor
+        parametro.borderColor.set( 1f, 1f, 1f, 1f);
 
-        this.fonte_alternativas = fonte_alternativa;
-        this.fonte_alternativas.setColor(Color.BLACK);
-        this.fonte_alternativas.getData().setScale(1.0f);
+        // gerando a fonte da pergunta
+        fonte_pergunta = gerador.generateFont(parametro);
+
+        // redimencionando tamanho para as alternativas
+        parametro.size = 24;
+        fonte_alternativas = gerador.generateFont(parametro);
     }
 
     public void le_arquivo(){
         
-        // Lê o arquivo de perguntas
+        // Le o arquivo de perguntas
         FileHandle file = Gdx.files.internal("questoes/PerguntasParadigmas.txt");
         String conteudoArquivo = file.readString();
 
@@ -56,7 +71,7 @@ public class CaixaPerguntas {
         String questao = questoesSeparadas[random_questao];
 
         // separa a questao por partes
-        partes = questao.split("\n");
+        partes = questao.split(";");
 
         // se a string partes conter uma questao
         if(partes.length >= 1){
@@ -64,15 +79,22 @@ public class CaixaPerguntas {
             alternativas[0] = partes[2];
             alternativas[1] = partes[3];
             alternativas[2] = partes[4];
-            resposta = partes[4];
+            linha_resposta = partes[5];
         }
+        // pega apenas a resposta, para comparar
+        // por que eu peguei o index 2? fui tentiando e deu
+        resposta = linha_resposta.charAt(2);
+    }
+
+    public char resposta_correta(){
+        return resposta;
     }
 
     // desenha as perguntas
     public void desenhar(SpriteBatch batch){
         fonte_pergunta.draw(batch, pergunta, posPerguntaX, posPerguntaY);
-        fonte_alternativas.draw(batch, alternativas[0], posPerguntaX, posPerguntaY - 100);
-        fonte_alternativas.draw(batch, alternativas[1], posPerguntaX, posPerguntaY - 200);
-        fonte_alternativas.draw(batch, alternativas[2], posPerguntaX, posPerguntaY - 300);
+        fonte_alternativas.draw(batch, alternativas[0], posPerguntaX + 20, posPerguntaY - 250);
+        fonte_alternativas.draw(batch, alternativas[1], posPerguntaX + 20, posPerguntaY - 450);
+        fonte_alternativas.draw(batch, alternativas[2], posPerguntaX + 20, posPerguntaY - 650);
     }
 }

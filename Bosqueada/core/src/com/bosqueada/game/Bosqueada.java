@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,8 +27,8 @@ public class Bosqueada extends ApplicationAdapter {
 	Sprite jacare;
 	FrameBuffer frameBuffer;
 	Texture texturaPausada;
-	BitmapFont fonte_pergunta;
-	BitmapFont fonte_alternativas;
+	FreeTypeFontGenerator gerador;
+    FreeTypeFontGenerator.FreeTypeFontParameter parametro;
 	Texture caixaPerguntas_textura;
 	Texture tiro_textura;
 	Tiro tiro;
@@ -51,17 +52,23 @@ public class Bosqueada extends ApplicationAdapter {
 
 	// cores
 	Color babyBlue = new Color(0.678f, 0.847f, 0.902f, 1f);
-	Color black = new Color(0,0,0,0);
 	
 	@Override
 	public void create () {
 
+		// batch
 		batch = new SpriteBatch();
 
 		// Criando um FrameBuffer com o tamanho da tela
         frameBuffer = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 
+		// textura botao sair
 		botao_sair = new Texture("texturas/botao_sair.png");
+
+		// textura botao alternativa
+		botao_alternativa = new Texture("texturas/botao_alternativa.png");
+		botao_alternativa_exata = new Texture("texturas/botao_alternativa_exata.png");
+		botao_alternativa_errada = new Texture("texturas/botao_alternativa_errada.png");
 
 		// textura do personagem
 		jacare_textura = new Texture("texturas/jacare.png");
@@ -82,20 +89,20 @@ public class Bosqueada extends ApplicationAdapter {
 		jacare = new Sprite(jacare_textura);
 
 		// definindo a posicao inicial
-		jacare.setPosition(0, Gdx.graphics.getHeight()/6 + 20);
+		jacare.setPosition(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/6 + 20);
 
 		pedras = new Pedra[pedras_quantidade];
 
 		caixaPerguntas_textura = new Texture("texturas/fundoDaPergunta.jpg");
-		fonte_pergunta = new BitmapFont();
-		fonte_alternativas = new BitmapFont();
-		pergunta = new CaixaPerguntas(fonte_pergunta, fonte_alternativas, caixaPerguntas_textura);
+		gerador = new FreeTypeFontGenerator(Gdx.files.internal("fontes/fonte_questoes.ttf"));
+        parametro = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		pergunta = new CaixaPerguntas(gerador, parametro);
 
-		// Inicialize as pedras com diferentes posições e velocidades
+		// Inicialize as pedras com diferentes posicoes e velocidades
         for (int i = 0; i < pedras_quantidade; i++) {
             float x = MathUtils.random(0, 1280);
 			float y = Gdx.graphics.getHeight() + MathUtils.random(640, 5000);
-            float velocidade = MathUtils.random(50, 200);
+            float velocidade = MathUtils.random(500, 1000);
 
             pedras[i] = new Pedra(pedra_textura, x, y, velocidade);
         }
@@ -117,17 +124,18 @@ public class Bosqueada extends ApplicationAdapter {
 		// pega o deltaTime
 		float deltaTime = Gdx.graphics.getDeltaTime();
 		
+		// funcao de movimentos do jaca
 		moveJacare();
 		
 		//////////////////////////////////////////////////////////////////////////////////////
 
 		// checa se o jacaras passou do ponto pra direita e bota ele na esquerda
 		if (jacare.getX() > Gdx.graphics.getWidth() - jacare.getWidth()){
-			jacare.setPosition( 0, Gdx.graphics.getHeight()/6 + 20);
+			jacare.setPosition( -20, Gdx.graphics.getHeight()/6 + 20);
 		}
 
 		// checa se o jacas passou do ponto pra esquerda e bota ele na direita
-		if (jacare.getX() < 0){
+		if (jacare.getX() < -20){
 			jacare.setPosition( Gdx.graphics.getWidth() - jacare.getWidth(), Gdx.graphics.getHeight()/6 + 20);
 		}
 
@@ -139,7 +147,7 @@ public class Bosqueada extends ApplicationAdapter {
 		if(!pause){
 			// fundo
 			batch.draw(chao, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
+			
 			// jacaras
 			jacare.draw(batch);
 
@@ -148,7 +156,7 @@ public class Bosqueada extends ApplicationAdapter {
         	    pedra.atualizar(deltaTime);
         	    pedra.desenhar(batch);
 
-				// Verifica a colisão entre o jacaré e cada uma das pedras
+				// Verifica a colisao entre o jacare e cada uma das pedras
 				if (detectarColisao(jacare, pedra.getSprite())) {
 					// o que acontece quando colide
 					// nesse caso, reseta a posicao do jaca
@@ -161,7 +169,7 @@ public class Bosqueada extends ApplicationAdapter {
 			// botao sair
 			batch.draw(botao_sair, Gdx.graphics.getWidth() - botao_sair.getWidth(), Gdx.graphics.getHeight() - botao_sair.getHeight());
 			
-			// Verifica se o botão_sair foi clicado com o botão esquerdo do mouse
+			// Verifica se o botao_sair foi clicado com o botao esquerdo do mouse
 			if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
             	mouseX >= Gdx.graphics.getWidth() - botao_sair.getWidth() &&
             	mouseX <= Gdx.graphics.getWidth() &&
@@ -177,6 +185,67 @@ public class Bosqueada extends ApplicationAdapter {
 
 		// se estiver pausado, salva o estado atual no buffer
 		}else if(pause){
+			// fundo pergunta
+			// Define a opacidade para 50%
+			batch.setColor(1, 1, 1, 0.5f); 
+			batch.draw(caixaPerguntas_textura, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			// botao alternativa
+			batch.draw(botao_alternativa, 20 , Gdx.graphics.getHeight() - 500);
+			batch.draw(botao_alternativa, 20 , Gdx.graphics.getHeight() - 700);
+			batch.draw(botao_alternativa, 20 , Gdx.graphics.getHeight() - 900);
+			// opacidade volta ao normal
+			batch.setColor(1, 1, 1, 1f); 
+
+			// checa se acertou a questao
+			// primeiro botao
+			if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
+				mouseX >= 20 && mouseX <= 20 + botao_alternativa.getWidth() &&
+        	    mouseY >= Gdx.graphics.getHeight() - 500 && 
+				mouseY <= Gdx.graphics.getHeight() - 500 + botao_alternativa.getHeight()){
+				// se estiver certo
+				if(pergunta.resposta_correta() == 'a'){
+					// desenha um botao verde
+					batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 500);
+					espera(2);
+				// se estiver errado
+				}else{
+					// desenha um botao vermelho
+					batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 500);
+					espera(2);
+				}
+			// segundo botao
+    		}if(Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
+					mouseX >= 20 && mouseX <= 20 + botao_alternativa.getWidth() &&
+					mouseY >= Gdx.graphics.getHeight() - 700 &&
+					mouseY <= Gdx.graphics.getHeight() - 700 + botao_alternativa.getHeight()){
+					// se estiver certo
+					if(pergunta.resposta_correta() == 'b'){
+						// desenha um botao verde
+						batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 700);
+						espera(2);
+					// se estiver errado
+					}else{
+						// desenha um botao vermelho
+						batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 700);
+						espera(2);
+					}
+			// terceiro botao
+			}if(Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
+					mouseX >= 20 && mouseX <= 20 + botao_alternativa.getWidth() &&
+					mouseY >= Gdx.graphics.getHeight() - 900 &&
+					mouseY <= Gdx.graphics.getHeight() - 900 + botao_alternativa.getHeight()){
+					// se estiver certo
+					if(pergunta.resposta_correta() == 'c'){
+						// desenha um botao verde
+						batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 900);
+						espera(2);
+					// se estiver errado
+					}else{
+						// desenha um botao vermelho
+						batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 900);
+						espera(2);
+					}
+			}
 
 			// pergunta
     		pergunta.desenhar(batch);
@@ -184,7 +253,7 @@ public class Bosqueada extends ApplicationAdapter {
 			// botao sair
 			batch.draw(botao_sair, Gdx.graphics.getWidth() - botao_sair.getWidth(), Gdx.graphics.getHeight() - botao_sair.getHeight());
 			
-			// Verifica se o botão_sair foi clicado com o botão esquerdo do mouse
+			// Verifica se o botao_sair foi clicado com o botao esquerdo do mouse
 			if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
             	mouseX >= Gdx.graphics.getWidth() - botao_sair.getWidth() &&
             	mouseX <= Gdx.graphics.getWidth() &&
@@ -199,18 +268,18 @@ public class Bosqueada extends ApplicationAdapter {
 			
 			frameBuffer.end();
 
-			// O que foi desenhado até este ponto será salvo no FrameBuffer
+			// O que foi desenhado ate este ponto sera salvo no FrameBuffer
 			texturaPausada = frameBuffer.getColorBufferTexture();
 		}
 
 		// despausa quando aperta A
-		if(Gdx.input.isKeyPressed(Input.Keys.A)){
+		if(Gdx.input.isKeyPressed(Input.Keys.R)){
 			pause = false;
 		}
 
 		batch.end();
 
-		// se não estiver pausado, desenha a textura salva na tela
+		// se nao estiver pausado, desenha a textura salva na tela
         if (texturaPausada != null && pause) {
             batch.begin();
             batch.draw(texturaPausada, 0, 0);
@@ -230,8 +299,7 @@ public class Bosqueada extends ApplicationAdapter {
         if (texturaPausada != null) {
             texturaPausada.dispose();
         }
-		fonte_pergunta.dispose();
-		fonte_alternativas.dispose();
+		gerador.dispose();
 	}
 
 
@@ -240,7 +308,7 @@ public class Bosqueada extends ApplicationAdapter {
 
 		boolean caminhando = false;
 
-		// Movimenta o personagem para a esquerda quando a tecla seta esquerda ou 'A' é pressionada
+		// Movimenta o personagem para a esquerda quando a tecla seta esquerda ou 'A' e pressionada
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
             jacare.setX(jacare.getX() - 10);
 			caminhando = true;
@@ -268,7 +336,7 @@ public class Bosqueada extends ApplicationAdapter {
 
         }
 
-        // Movimenta o personagem para a direita quando a tecla seta direita ou 'D' é pressionada
+        // Movimenta o personagem para a direita quando a tecla seta direita ou 'D' e pressionada
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
             jacare.setX(jacare.getX() + 10);
 			caminhando = true;
@@ -369,4 +437,23 @@ public class Bosqueada extends ApplicationAdapter {
 	private boolean detectarColisao(Sprite sprite1, Sprite sprite2) {
 		return sprite1.getBoundingRectangle().overlaps(sprite2.getBoundingRectangle());
 	}
-}
+
+	// faz o programa esperar alguns segundos
+	private void espera(float tempo_de_espera){
+		// Variáveis de controle para temporização
+		float tempoInicial = 0;
+		boolean pause = true;
+		if (pause) {
+			// Verifica quanto tempo passou desde o início do atraso
+			float tempoAtual = Gdx.graphics.getDeltaTime();
+			tempoInicial += tempoAtual;
+		
+		    // Verifica se o tempo de espera foi alcançado
+			if (tempoInicial >= tempo_de_espera) {
+		        // Lógica para quando o tempo de espera terminar
+		        pause = false;
+		    }
+		}
+	}
+}	
+
