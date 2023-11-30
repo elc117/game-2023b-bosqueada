@@ -40,6 +40,8 @@ public class Bosqueada extends ApplicationAdapter {
 
 	boolean virado_esquerda = true;
 	boolean pause = false;
+	boolean menu_inicio = true;
+	boolean menu_pergunta = true;
 
 	int contador_auxiliar_caminhada = 0;
 	int nivel = 1;
@@ -169,7 +171,7 @@ public class Bosqueada extends ApplicationAdapter {
     		}
 
 		// se estiver pausado, salva o estado atual no buffer
-		}else if(pause){
+		}else if(pause && menu_pergunta){
 			// fundo pergunta
 			// Define a opacidade para 50%
 			batch.setColor(1, 1, 1, 0.5f); 
