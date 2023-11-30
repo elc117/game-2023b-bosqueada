@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -55,6 +56,8 @@ public class Bosqueada extends ApplicationAdapter {
 	private Menu menu;
 	private Music musicaMenu;
 
+	private Sound somTiro;
+
 	BitmapFont fonte_pontos;
 	int pontos = 0;
 	
@@ -75,6 +78,7 @@ public class Bosqueada extends ApplicationAdapter {
 	Texture municao_textura;
 	BitmapFont fonte_municao;
 	int municao_quantidade = 30;
+	private boolean teclaAtiraPressionada = false;
 
 	int contador_auxiliar_caminhada = 0;
 	int pedras_quantidade = 50;
@@ -89,6 +93,8 @@ public class Bosqueada extends ApplicationAdapter {
 		musicaMenu = Gdx.audio.newMusic(Gdx.files.internal("audio/astronauta.mp3"));
         musicaMenu.setLooping(true); // Para reprodução contínua
         musicaMenu.play();
+
+		somTiro = Gdx.audio.newSound(Gdx.files.internal("audio/somtiro.mp3"));
 
 		// cria um menu
 		menu = new Menu();
@@ -307,7 +313,7 @@ public class Bosqueada extends ApplicationAdapter {
 					}
 		 		// atualiza arma e tiro pra esquerda
 		 		if(arma_virada_esquerda){
-					 arma.atualizaArma(jacare.getX() + jacare.getWidth()/4 - 20, jacare.getY() + jacare.getHeight()/2 + 20, arma_sprite);
+					 arma.atualizaArma(jacare.getX() + jacare.getWidth()/4 - 30, jacare.getY() + jacare.getHeight()/2 + 20, arma_sprite);
 					 disparoX = jacare.getX() + jacare.getWidth()/4 - 20;
 					 disparoY = jacare.getY() + jacare.getHeight()/2 + 20;
 				
@@ -515,13 +521,22 @@ public class Bosqueada extends ApplicationAdapter {
 	private void handleInput(float mouseX, float mouseY, float disparoX, float disparoY, int _quantidade){
 		// cria o tiro, com sua posicao e textura
 		Tiro novoTiro = new Tiro(tiro_textura, disparoX, disparoY);
-		if( Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+		if( Gdx.input.isButtonPressed(Input.Buttons.LEFT) && !teclaAtiraPressionada){
+			teclaAtiraPressionada = true;
 			novoTiro.atirarMouse(mouseX, mouseY);
 			tiros.add(novoTiro);
+
+			if (somTiro != null) {
+                somTiro.play();
+            }
 			// diminui uma municao por cada disparo
 			if(municao_quantidade > 0){
 				municao_quantidade--;
 			}
+		}
+
+		if (!Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+			teclaAtiraPressionada = false;
 		}
 	}
 
