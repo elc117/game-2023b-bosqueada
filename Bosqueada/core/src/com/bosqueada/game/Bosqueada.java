@@ -63,6 +63,8 @@ public class Bosqueada extends ApplicationAdapter {
 	
 	// cria o vetor de pedras
 	Pedra[] pedras;
+	float tempoSpawnPedra = 0f;
+    float intervaloSpawnPedra = 2f;
 
 	CaixaPerguntas pergunta;
 
@@ -81,7 +83,7 @@ public class Bosqueada extends ApplicationAdapter {
 	private boolean teclaAtiraPressionada = false;
 
 	int contador_auxiliar_caminhada = 0;
-	int pedras_quantidade = 50;
+	int pedras_quantidade = 100;
 
 	float disparoX, disparoY;
 
@@ -270,6 +272,12 @@ public class Bosqueada extends ApplicationAdapter {
 					vida = false;
 				}
         	}
+
+			tempoSpawnPedra += Gdx.graphics.getDeltaTime();
+            if (tempoSpawnPedra >= intervaloSpawnPedra) {
+                spawnNovaPedra();
+                tempoSpawnPedra = 0f;
+            }
 
 			// botao sair
 			batch.draw(botao_sair, Gdx.graphics.getWidth() - botao_sair.getWidth(), Gdx.graphics.getHeight() - botao_sair.getHeight());
@@ -562,8 +570,7 @@ public class Bosqueada extends ApplicationAdapter {
 		tiro.desenha(batch);
 		}
 	}
-
-
+	
 	private void atualizaPedras() {
 		List<Pedra> pedrasNaoAtingidas = new ArrayList<>();
 	
@@ -583,25 +590,43 @@ public class Bosqueada extends ApplicationAdapter {
 						colidiu = true;
 						pontos++;
 						municao_quantidade++;
+	
+						// Adiciona três novas pedras quando um tiro acerta
+						for (int j = 0; j < 3; j++) {
+							float x = MathUtils.random(0, Gdx.graphics.getWidth());
+							float y = Gdx.graphics.getHeight() + MathUtils.random(640, 5000);
+							float velocidade = MathUtils.random(50, 200);
+							pedrasNaoAtingidas.add(new Pedra(pedra_textura, x, y, velocidade));
+						}
+	
 						break;
 					}
 				}
 	
 				if (!colidiu) {
 					pedrasNaoAtingidas.add(pedra);
-				} else {
-					// Adicione uma nova pedra no topo da tela
-					float x = MathUtils.random(0, 1280);
-					float y = Gdx.graphics.getHeight() + MathUtils.random(640, 5000);
-					float velocidade = MathUtils.random(50, 200);
-	
-					pedras[i] = new Pedra(pedra_textura, x, y, velocidade);
 				}
 			}
 		}
 	
 		pedras = pedrasNaoAtingidas.toArray(new Pedra[0]);
 	}
+	
+
+	private void spawnNovaPedra() {
+        // Adicione uma nova pedra no topo da tela
+        float x = MathUtils.random(0, Gdx.graphics.getWidth());
+        float y = Gdx.graphics.getHeight() + MathUtils.random(640, 5000);
+        float velocidade = MathUtils.random(50, 200);
+
+        // Encontre um slot vazio no array de pedras
+        for (int i = 0; i < pedras.length; i++) {
+            if (pedras[i] == null) {
+                pedras[i] = new Pedra(pedra_textura, x, y, velocidade);
+                break;
+            }
+        }
+    }
 
 	// detecta colisoes entre duas sprites
 	private boolean detectarColisao(Sprite sprite1, Sprite sprite2) {
