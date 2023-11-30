@@ -1,5 +1,6 @@
 package com.bosqueada.game;
 
+
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.Gdx;
@@ -10,12 +11,18 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+
+// fontes
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
+// cronometro
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -23,6 +30,9 @@ import java.util.List;
 import org.w3c.dom.Text;
 
 public class Bosqueada extends ApplicationAdapter {
+
+	Timer cronometro;
+	TimerTask tarefa;
 
 	SpriteBatch batch;
 	Texture chao;
@@ -66,12 +76,13 @@ public class Bosqueada extends ApplicationAdapter {
 	boolean vida = true;
 
 	Sprite municao;
+	List<Sprite> municoes;
 	Texture municao_textura;
 	BitmapFont fonte_municao;
 	int municao_quantidade = 30;
 
 	int contador_auxiliar_caminhada = 0;
-	int pedras_quantidade = 50;
+	int pedras_quantidade = 500;
 
 	float disparoX, disparoY;
 
@@ -96,7 +107,24 @@ public class Bosqueada extends ApplicationAdapter {
 		botao_alternativa_errada = new Texture("texturas/botao_alternativa_errada.png");
 
 		// textura caixa de municoes
-		municao_textura = new Texture("texturas/caixa_municao.jpeg");
+		municao_textura = new Texture("texturas/caixa_municao.jpg");
+
+		// municao sprite
+		municao = new Sprite(municao_textura);
+
+		municoes = new ArrayList<>();
+
+		cronometro = new Timer();
+		tarefa = new TimerTask() {
+			@Override
+			public void run(){
+				municao.setPosition(MathUtils.random(30, Gdx.graphics.getWidth()), Gdx.graphics.getHeight());
+				
+			}
+		};
+		// 5 a 5 segundos para cair o drop
+		int milissegundos = MathUtils.random(5000, 15000);
+		cronometro.schedule(tarefa, milissegundos);
 
 		// textura do personagem
 		jacare_textura = new Texture("texturas/jacare.png");
@@ -107,6 +135,7 @@ public class Bosqueada extends ApplicationAdapter {
 		// textura das arvores de fundo
 		chao = new Texture("texturas/background2.jpg");
 
+		// fontes
 		fonte_pontos = new BitmapFont();
 		fonte_municao = new BitmapFont();
 
@@ -128,12 +157,6 @@ public class Bosqueada extends ApplicationAdapter {
 
 		tiros = new ArrayList<>();
 
-		tiro_textura = new Texture("texturas/tiro.png");
-
-		tiro = new Tiro(tiro_textura, jacare.getX(), jacare.getY());
-
-		tiros = new ArrayList<>();
-
 		pedras = new Pedra[pedras_quantidade];
 
 		caixaPerguntas_textura = new Texture("texturas/fundoDaPergunta.jpg");
@@ -144,7 +167,7 @@ public class Bosqueada extends ApplicationAdapter {
 		// Inicialize as pedras com diferentes posicoes e velocidades
         for (int i = 0; i < pedras_quantidade; i++) {
             float x = MathUtils.random(0, 1280);
-			float y = Gdx.graphics.getHeight() + MathUtils.random(640, 5000);
+			float y = Gdx.graphics.getHeight() + MathUtils.random(640, 20000);
             float velocidade = MathUtils.random(100, 300);
 
             pedras[i] = new Pedra(pedra_textura, x, y, velocidade);
@@ -236,7 +259,7 @@ public class Bosqueada extends ApplicationAdapter {
 
 			// desenha municao: quantas municoes
 			fonte_municao.draw(batch, "Municao: " + municao_quantidade, X, Y);
-			
+
 			// Atualiza e desenha as pedras
         	for (Pedra pedra : pedras) {
         	    pedra.atualizar(deltaTime);
@@ -263,11 +286,31 @@ public class Bosqueada extends ApplicationAdapter {
         		Gdx.app.exit(); 
     		}
 
-			
-
 			// desenha e atualiza tiro e pedra
 			atualiza();
 			desenha();
+			municao.draw(batch);
+
+			// faz a caixa de municao cair até o chao do jaca
+			if(municao.getY() > Gdx.graphics.getHeight()/6 + 20){
+				municao.setY(municao.getY()-100);
+			}
+
+			// detecta colisao com a caixa
+			if(detectarColisao(jacare, municao)){
+				// adiciona municao a municoes quando chegar ao solo
+				municoes.add(municao);
+			}
+
+			Iterator<Sprite> iterador_municao = municoes.iterator();
+			while(iterador_municao.hasNext()){
+				Sprite m = iterador_municao.next();
+				if(detectarColisao(jacare, m)){
+						// adiciona municao e remove a caixa
+					municao_quantidade += 1;
+					iterador_municao.remove();
+				}
+			}	
 			
 			if(municao_quantidade > 0){
 				armado = true;
@@ -357,20 +400,20 @@ public class Bosqueada extends ApplicationAdapter {
 					}
 			// terceiro botao
 			}if(Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
-					mouseX >= 20 && mouseX <= 20 + botao_alternativa.getWidth() &&
-					mouseY >= Gdx.graphics.getHeight() - 900 &&
-					mouseY <= Gdx.graphics.getHeight() - 900 + botao_alternativa.getHeight()){
-					// se estiver certo
-					if(pergunta.resposta_correta() == 'c'){
-						// desenha um botao verde
-						batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 900);
-						vida = true;
-						pause = false;
-					// se estiver errado
-					}else{
-						// desenha um botao vermelho
-						batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 900);
-					}
+				mouseX >= 20 && mouseX <= 20 + botao_alternativa.getWidth() &&
+				mouseY >= Gdx.graphics.getHeight() - 900 &&
+				mouseY <= Gdx.graphics.getHeight() - 900 + botao_alternativa.getHeight()){
+				// se estiver certo
+				if(pergunta.resposta_correta() == 'c'){
+					// desenha um botao verde
+					batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 900);
+					vida = true;
+					pause = false;
+				// se estiver errado
+				}else{
+					// desenha um botao vermelho
+					batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 900);
+				}
 			}
 
 			// pergunta
@@ -406,12 +449,11 @@ public class Bosqueada extends ApplicationAdapter {
 		batch.end();
 
 		// se nao estiver pausado, desenha a textura salva na tela
-        if (texturaPausada != null && pause) {
+        if(texturaPausada != null && pause) {
             batch.begin();
             batch.draw(texturaPausada, 0, 0);
             batch.end();
         }
-
 	}
 	
 	@Override
@@ -428,11 +470,13 @@ public class Bosqueada extends ApplicationAdapter {
         }
 		gerador.dispose();
 		arma_textura.dispose();
+		municao_textura.dispose();
+		
 	}
 
 
 	// movimento do jaca
-	private void moveJacare(){
+	public void moveJacare(){
 
 		boolean caminhando = false;
 
@@ -517,6 +561,12 @@ public class Bosqueada extends ApplicationAdapter {
 			tiro.atualiza(Gdx.graphics.getDeltaTime());
 
 			if(tiro.pegaPosicao().y > Gdx.graphics.getHeight()){
+				iterator.remove();
+			}else if(tiro.pegaPosicao().y < 0){
+				iterator.remove();
+			}else if(tiro.pegaPosicao().x < 0){
+				iterator.remove();
+			}else if(tiro.pegaPosicao().x > Gdx.graphics.getWidth()){
 				iterator.remove();
 			}
 		}
