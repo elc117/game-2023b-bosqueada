@@ -31,6 +31,10 @@ public class Menu {
         return jogoIniciado;
     }
 
+    public void setIsJogoIniciado(boolean iniciado){
+        jogoIniciado = iniciado;
+    }
+
     public void dispose() {
         fundo_textura.dispose();
         batch.dispose();

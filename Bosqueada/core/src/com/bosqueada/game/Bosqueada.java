@@ -84,7 +84,7 @@ public class Bosqueada extends ApplicationAdapter {
 	boolean menu_inicio = false;
 	boolean menu_pergunta = false;
 	boolean armado;
-	boolean vida = true;
+	boolean vida = false;
 	boolean caixaColetada = false;
 
 	Sprite municao;
@@ -96,6 +96,8 @@ public class Bosqueada extends ApplicationAdapter {
 
 	int contador_auxiliar_caminhada = 0;
 	int pedras_quantidade = 110;
+
+	int grausSoma = 0;
 
 	float disparoX, disparoY;
 
@@ -168,9 +170,9 @@ public class Bosqueada extends ApplicationAdapter {
 
 		arma_textura = new Texture("texturas/ak.png");
 
-		arma = new Ak47(arma_textura, arma_sprite, jacare.getX(), jacare.getY());
-
 		arma_sprite = new Sprite(arma_textura);
+
+		arma = new Ak47(arma_textura, arma_sprite, jacare.getX(), jacare.getY());
 
 		tiro_textura = new Texture("texturas/tiro.png");
 
@@ -201,9 +203,12 @@ public class Bosqueada extends ApplicationAdapter {
 
 	@Override
 	public void render() {
+		
 		if (!menu.isJogoIniciado()) {
 			menu.render();
+			vida = true;
 		} else {
+
 		ScreenUtils.clear(babyBlue);
 
 		// pega a cordenada do mouse dentro do loop do game
@@ -214,24 +219,10 @@ public class Bosqueada extends ApplicationAdapter {
 		// pega o deltaTime
 		float deltaTime = Gdx.graphics.getDeltaTime();
 		
+		batch.begin();
+		
 		// funcao de movimentos do jaca
 		moveJacare();
-		
-		//////////////////////////////////////////////////////////////////////////////////////
-
-		// checa se o jacaras passou do ponto pra direita e bota ele na esquerda
-		if (jacare.getX() > Gdx.graphics.getWidth() - jacare.getWidth()){
-			jacare.setPosition( -20, Gdx.graphics.getHeight()/6 + 20);
-		}
-
-		// checa se o jacas passou do ponto pra esquerda e bota ele na direita
-		if (jacare.getX() < -20){
-			jacare.setPosition( Gdx.graphics.getWidth() - jacare.getWidth(), Gdx.graphics.getHeight()/6 + 20);
-		}
-
-		///////////////////////////////////////////////////////////////////////////////////////
-
-		batch.begin();
 
 		if(!vida){
 			menu_pergunta = true;
@@ -303,22 +294,12 @@ public class Bosqueada extends ApplicationAdapter {
                 tempoSpawnPedra = 0f;
             }
 
-			// botao sair
-			batch.draw(botao_sair, Gdx.graphics.getWidth() - botao_sair.getWidth(), Gdx.graphics.getHeight() - botao_sair.getHeight());
-			
-			// Verifica se o botao_sair foi clicado com o botao esquerdo do mouse
-			if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
-            	mouseX >= Gdx.graphics.getWidth() - botao_sair.getWidth() &&
-            	mouseX <= Gdx.graphics.getWidth() &&
-            	mouseY >= Gdx.graphics.getHeight() - botao_sair.getHeight() &&
-            	mouseY <= Gdx.graphics.getHeight()) {
-				// Fecha o jogo
-        		Gdx.app.exit(); 
-    		}
+			botaoSair(mouseX, mouseY);
 
 			// desenha e atualiza tiro e pedra
 			atualiza();
 			desenha();
+
 			if (!caixaColetada) {
 				municao.draw(batch);
 			}
@@ -355,129 +336,54 @@ public class Bosqueada extends ApplicationAdapter {
 			if(armado){
 				// se arma nao direita, arma direita
 				if(mouseX > jacare.getX() &&
-				arma_virada_esquerda &&
-				Gdx.input.isButtonPressed(Input.Buttons.LEFT) ){
-				 arma_sprite.flip(true,false);
-				 arma_virada_esquerda = false;
+				arma_virada_esquerda){
+					arma_sprite.flip(true,false);
+					arma_virada_esquerda = false;
 		 		}
 		 		// se arma nao esquerda, arma esquerda
 		 		if(mouseX < jacare.getX() &&
-					!arma_virada_esquerda &&
-					Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
-					 arma_sprite.flip(true,false);
-					 arma_virada_esquerda = true;
+					!arma_virada_esquerda){
+						arma_sprite.flip(true,false);
+						arma_virada_esquerda = true;
 					}
 		 		// atualiza arma e tiro pra esquerda
 		 		if(arma_virada_esquerda){
-					 arma.atualizaArma(jacare.getX() + jacare.getWidth()/4 - 30, jacare.getY() + jacare.getHeight()/2 + 20, arma_sprite);
-					 disparoX = jacare.getX() + jacare.getWidth()/4 - 20;
-					 disparoY = jacare.getY() + jacare.getHeight()/2 + 20;
-				
+					arma.atualizaArma(jacare.getX() + jacare.getWidth()/4 - 30, jacare.getY() + jacare.getHeight()/2 + 20, arma_sprite);
+					disparoX = jacare.getX() + jacare.getWidth()/4 - 20;
+					disparoY = jacare.getY() + jacare.getHeight()/2 + 20;
+					grausSoma = 180;
+
+					// ajusta a posicao de saida do tiro
+					if(mouseY >= jacare.getY() * 2 - 30){
+						disparoX = jacare.getX() + jacare.getWidth()/4 + 30;
+						disparoY = jacare.getY() + jacare.getHeight()/2 + 40;
+					}
+
 				// atualiza arma e tiro pra direita
 		 		}else{
-					 arma.atualizaArma(jacare.getX() + jacare.getWidth()/4 + 40, jacare.getY() + jacare.getHeight()/2 + 20, arma_sprite);
-					 disparoX = jacare.getX() + jacare.getWidth()/4 + 60;
-					 disparoY = jacare.getY() + jacare.getHeight()/2 + 15;
+					arma.atualizaArma(jacare.getX() + jacare.getWidth()/4, jacare.getY() + jacare.getHeight()/2 + 20, arma_sprite);
+					disparoX = jacare.getX() + jacare.getWidth()/4 + 100;
+					disparoY = jacare.getY() + jacare.getHeight()/2 + 40;
+					grausSoma = 360;
+
+					// ajusta a posicao de saida do tiro
+					if(mouseY >= jacare.getY() * 2 - 30){
+						disparoX = jacare.getX() + jacare.getWidth()/4 + 50;
+						disparoY = jacare.getY() + jacare.getHeight()/2 + 40;
+					}
 		 		}
 			
 		 		handleInput(mouseX, mouseY, disparoX, disparoY, municao_quantidade);
 			
 		 		arma.desenha(batch, arma_sprite);
+
+				arma.rotacionaArma(mouseX, mouseY, grausSoma);
 			}
 			
 
 		// se estiver pausado, salva o estado atual no buffer
 		}else if(pause && menu_pergunta){
-			// fundo pergunta
-			// Define a opacidade para 50%
-			batch.setColor(1, 1, 1, 0.5f); 
-			batch.draw(caixaPerguntas_textura, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-			// botao alternativa
-			batch.draw(botao_alternativa, 20 , Gdx.graphics.getHeight() - 500);
-			batch.draw(botao_alternativa, 20 , Gdx.graphics.getHeight() - 700);
-			batch.draw(botao_alternativa, 20 , Gdx.graphics.getHeight() - 900);
-			// opacidade volta ao normal
-			batch.setColor(1, 1, 1, 1f); 
-
-			// checa se acertou a questao
-			// primeiro botao
-			if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
-				mouseX >= 20 && mouseX <= 20 + botao_alternativa.getWidth() &&
-        	    mouseY >= Gdx.graphics.getHeight() - 500 && 
-				mouseY <= Gdx.graphics.getHeight() - 500 + botao_alternativa.getHeight()){
-				// se estiver certo
-				if(pergunta.resposta_correta() == 'a'){
-					// desenha um botao verde
-					batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 500);
-					vida = true;
-					pause = false;
-				// se estiver errado
-				}else{
-					// desenha um botao vermelho
-					batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 500);
-				}
-			// segundo botao
-    		}if(Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
-					mouseX >= 20 && mouseX <= 20 + botao_alternativa.getWidth() &&
-					mouseY >= Gdx.graphics.getHeight() - 700 &&
-					mouseY <= Gdx.graphics.getHeight() - 700 + botao_alternativa.getHeight()){
-					// se estiver certo
-					if(pergunta.resposta_correta() == 'b'){
-						// desenha um botao verde
-						batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 700);
-						vida = true;
-						pause = false;
-					// se estiver errado
-					}else{
-						// desenha um botao vermelho
-						batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 700);
-					}
-			// terceiro botao
-			}if(Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
-				mouseX >= 20 && mouseX <= 20 + botao_alternativa.getWidth() &&
-				mouseY >= Gdx.graphics.getHeight() - 900 &&
-				mouseY <= Gdx.graphics.getHeight() - 900 + botao_alternativa.getHeight()){
-				// se estiver certo
-				if(pergunta.resposta_correta() == 'c'){
-					// desenha um botao verde
-					batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 900);
-					vida = true;
-					pause = false;
-				// se estiver errado
-				}else{
-					// desenha um botao vermelho
-					batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 900);
-				}
-			}
-
-			// pergunta
-    		pergunta.desenhar(batch);
-
-			// botao sair
-			batch.draw(botao_sair, Gdx.graphics.getWidth() - botao_sair.getWidth(), Gdx.graphics.getHeight() - botao_sair.getHeight());
-			
-			// Verifica se o botao_sair foi clicado com o botao esquerdo do mouse
-			if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
-            	mouseX >= Gdx.graphics.getWidth() - botao_sair.getWidth() &&
-            	mouseX <= Gdx.graphics.getWidth() &&
-            	mouseY >= Gdx.graphics.getHeight() - botao_sair.getHeight() &&
-            	mouseY <= Gdx.graphics.getHeight()) {
-				// Fecha o jogo
-        		Gdx.app.exit(); 
-    		}
-
-			// inicia o buffer
-			frameBuffer.begin();
-			
-			frameBuffer.end();
-
-			// O que foi desenhado ate este ponto sera salvo no FrameBuffer
-			texturaPausada = frameBuffer.getColorBufferTexture();
-		}
-
-		// despausa quando aperta A
-		if(Gdx.input.isKeyPressed(Input.Keys.R)){
-			pause = false;
+			menuPerguntaLogica(mouseX, mouseY);
 		}
 
 		batch.end();
@@ -517,6 +423,16 @@ public class Bosqueada extends ApplicationAdapter {
 	public void moveJacare(){
 
 		boolean caminhando = false;
+
+		// checa se o jacaras passou do ponto pra direita e bota ele na esquerda
+		if (jacare.getX() > Gdx.graphics.getWidth() - jacare.getWidth()){
+			jacare.setPosition( -20, Gdx.graphics.getHeight()/6 + 20);
+		}
+
+		// checa se o jacas passou do ponto pra esquerda e bota ele na direita
+		if (jacare.getX() < -20){
+			jacare.setPosition( Gdx.graphics.getWidth() - jacare.getWidth(), Gdx.graphics.getHeight()/6 + 20);
+		}
 
 		// Movimenta o personagem para a esquerda quando a tecla seta esquerda ou 'A' e pressionada
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
@@ -607,6 +523,7 @@ public class Bosqueada extends ApplicationAdapter {
 			Tiro tiro = iterator.next();
 			tiro.atualiza(Gdx.graphics.getDeltaTime());
 
+			// remove os tiros quando eles saem da tela
 			if(tiro.pegaPosicao().y > Gdx.graphics.getHeight()){
 				iterator.remove();
 			}else if(tiro.pegaPosicao().y < 0){
@@ -685,5 +602,113 @@ public class Bosqueada extends ApplicationAdapter {
 	// detecta colisoes entre duas sprites
 	private boolean detectarColisao(Sprite sprite1, Sprite sprite2) {
 		return sprite1.getBoundingRectangle().overlaps(sprite2.getBoundingRectangle());
+	}
+
+	private void menuPerguntaLogica(float mouseX, float mouseY){
+		// fundo pergunta
+			// Define a opacidade para 50%
+			batch.setColor(1, 1, 1, 0.5f); 
+			batch.draw(caixaPerguntas_textura, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			// botao alternativa
+			batch.draw(botao_alternativa, 20 , Gdx.graphics.getHeight() - 500);
+			batch.draw(botao_alternativa, 20 , Gdx.graphics.getHeight() - 700);
+			batch.draw(botao_alternativa, 20 , Gdx.graphics.getHeight() - 900);
+			// opacidade volta ao normal
+			batch.setColor(1, 1, 1, 1f); 
+
+			// checa se acertou a questao
+			// primeiro botao
+			if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
+				mouseX >= 20 && mouseX <= 20 + botao_alternativa.getWidth() &&
+        	    mouseY >= Gdx.graphics.getHeight() - 500 && 
+				mouseY <= Gdx.graphics.getHeight() - 500 + botao_alternativa.getHeight()){
+				// se estiver certo
+				if(pergunta.resposta_correta() == 'a'){
+					// desenha um botao verde
+					batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 500);
+					vida = true;
+					pause = false;
+				// se estiver errado
+				}else{
+					// desenha um botao vermelho
+					batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 500);
+					menu.setIsJogoIniciado(false); 
+				}
+			// segundo botao
+    		}if(Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
+					mouseX >= 20 && mouseX <= 20 + botao_alternativa.getWidth() &&
+					mouseY >= Gdx.graphics.getHeight() - 700 &&
+					mouseY <= Gdx.graphics.getHeight() - 700 + botao_alternativa.getHeight()){
+					// se estiver certo
+					if(pergunta.resposta_correta() == 'b'){
+						// desenha um botao verde
+						batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 700);
+						vida = true;
+						pause = false;
+					// se estiver errado
+					}else{
+						// desenha um botao vermelho
+						batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 700);
+						menu.setIsJogoIniciado(false);
+					}
+			// terceiro botao
+			}if(Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
+				mouseX >= 20 && mouseX <= 20 + botao_alternativa.getWidth() &&
+				mouseY >= Gdx.graphics.getHeight() - 900 &&
+				mouseY <= Gdx.graphics.getHeight() - 900 + botao_alternativa.getHeight()){
+				// se estiver certo
+				if(pergunta.resposta_correta() == 'c'){
+					// desenha um botao verde
+					batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 900);
+					vida = true;
+					pause = false;
+				// se estiver errado
+				}else{
+					// desenha um botao vermelho
+					batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 900);
+					menu.setIsJogoIniciado(false);
+				}
+			}
+
+			// pergunta
+    		pergunta.desenhar(batch);
+
+			botaoSair(mouseX, mouseY);
+
+			// inicia o buffer
+			frameBuffer.begin();
+			
+			frameBuffer.end();
+
+			// O que foi desenhado ate este ponto sera salvo no FrameBuffer
+			texturaPausada = frameBuffer.getColorBufferTexture();
+	}
+
+	// reinicia as variaveis e lógicas do game
+	private void reiniciarJogo(){
+
+		// pontos e municao reiniciados
+		pontos = 0;
+		municao_quantidade = 30;
+
+		// jaca posicao inicial
+		jacare.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 6 + 20);
+
+	}
+
+	// desenha e fecha caso clicado
+	public void botaoSair(float mouseX, float mouseY){
+		// botao sair
+		batch.draw(botao_sair, Gdx.graphics.getWidth() - botao_sair.getWidth(), Gdx.graphics.getHeight() - botao_sair.getHeight());
+			
+		// Verifica se o botao_sair foi clicado com o botao esquerdo do mouse
+		if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
+			mouseX >= Gdx.graphics.getWidth() - botao_sair.getWidth() &&
+			mouseX <= Gdx.graphics.getWidth() &&
+			mouseY >= Gdx.graphics.getHeight() - botao_sair.getHeight() &&
+			mouseY <= Gdx.graphics.getHeight()) {
+			// Fecha o jogo
+			Gdx.app.exit(); 
+		}
 	}
 }

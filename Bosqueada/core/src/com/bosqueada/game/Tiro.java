@@ -13,11 +13,12 @@ public class Tiro {
     private Vector2 velocidade; // Velocidade do tiro
     private Vector2 armaPosicao;
     private float velocidadeMaxima;
+    private float rotacao;
 
     public Tiro(Texture textura, float jacaX, float jacaY) {
         this.textura = textura;
         posicao = new Vector2(jacaX, jacaY); // Inicializa a posição como (0, 0) por padrão
-        velocidadeMaxima = 1000;
+        velocidadeMaxima = 2000;
         velocidade = new Vector2(0, velocidadeMaxima); // Velocidade vertical do tiro (ajuste conforme necessário)
         
     }
@@ -44,9 +45,19 @@ public class Tiro {
         }
     }
 
+    // rotacao de acordo com o
+    public void pegaRotacao(int mouseX, int mouseY){
+        float deltaX = mouseX - posicao.x;
+        float deltaY = mouseY - posicao.y;
+
+        rotacao = MathUtils.atan2(deltaY, deltaX) * MathUtils.radiansToDegrees;
+    }
+
     // Método para desenhar o tiro na tela usando o SpriteBatch
     public void desenha(SpriteBatch batch) {
-        batch.draw(textura, posicao.x, posicao.y);
+        batch.draw(textura, posicao.x, posicao.y, textura.getWidth() / 2, textura.getHeight() / 2,
+           textura.getWidth(), textura.getHeight(), 1, 1, rotacao, 0, 0,
+           textura.getWidth(), textura.getHeight(), false, false);
     }
 
     // Método para obter a posição atual do tiro
