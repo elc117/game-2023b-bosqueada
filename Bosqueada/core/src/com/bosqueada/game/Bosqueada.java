@@ -153,7 +153,7 @@ public class Bosqueada extends ApplicationAdapter {
 		jacare_textura = new Texture("texturas/jacare.png");
 
 		// textura da pedra
-		pedra_textura = new Texture("texturas/pedra.png");
+		pedra_textura = new Texture("texturas/meteoro.png");
 
 		// textura das arvores de fundo
 		chao = new Texture("texturas/background2.jpg");
