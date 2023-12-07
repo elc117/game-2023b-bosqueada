@@ -694,6 +694,7 @@ public class Bosqueada extends ApplicationAdapter {
 			// reinicia o jogo
 			menu.setIsJogoIniciado(false);
 			vida = false;
+			pause = false;
 			menu_pergunta = false;
 
 			// pontos e municao reiniciados
