@@ -87,7 +87,7 @@ public class CaixaPerguntas {
         if (linha_resposta.length() > 2) {
             resposta = linha_resposta.charAt(2);
         }else if(linha_resposta.length() <= 2){
-            resposta = linha_resposta.charAt(1);
+            resposta = linha_resposta.charAt(0);
         }
     }
 
@@ -98,6 +98,7 @@ public class CaixaPerguntas {
     // desenha as perguntas
     public void desenhar(SpriteBatch batch){
         fonte_pergunta.draw(batch, pergunta, posPerguntaX, posPerguntaY);
+        System.out.println(pergunta);
         fonte_alternativas.draw(batch, alternativas[0], posPerguntaX + 20, posPerguntaY - 250);
         fonte_alternativas.draw(batch, alternativas[1], posPerguntaX + 20, posPerguntaY - 450);
         fonte_alternativas.draw(batch, alternativas[2], posPerguntaX + 20, posPerguntaY - 650);

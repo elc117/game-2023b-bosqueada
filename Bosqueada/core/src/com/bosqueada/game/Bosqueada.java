@@ -66,6 +66,10 @@ public class Bosqueada extends ApplicationAdapter {
 	private Sound somAcertouPergunta;
 	private Sound somErrouPergunta;
 	
+	private Sound cavalo;
+	private Sound irra;
+	private Sound danca;
+	private Sound nossa;
 
 	BitmapFont fonte_pontos;
 	int pontos = 0;
@@ -119,6 +123,12 @@ public class Bosqueada extends ApplicationAdapter {
 
 		// pega o tempo desde o comeco da execucao
 		tempoInicial = TimeUtils.millis();
+
+		// efeitos sonoros pontos
+		cavalo = Gdx.audio.newSound(Gdx.files.internal("audio/cavalo.mp3"));
+		irra = Gdx.audio.newSound(Gdx.files.internal("audio/irra.mp3"));
+		nossa = Gdx.audio.newSound(Gdx.files.internal("audio/nossa.mp3"));
+		danca = Gdx.audio.newSound(Gdx.files.internal("audio/danca_gatinho.mp3"));
 
 		musicaMenu = Gdx.audio.newMusic(Gdx.files.internal("audio/astronauta.mp3"));
         musicaMenu.setLooping(true); // Para reprodução contínua
@@ -199,9 +209,6 @@ public class Bosqueada extends ApplicationAdapter {
 
             pedras[i] = new Pedra(pedra_textura, x, y, velocidade);
         }
-
-		// tempo entre 5 e 20 ( - caixas coletadas até 10) segundos para o spawn da caixa
-		//tempoSpawnCaixa = MathUtils.random(5, 20 - caixasColetadas);
 
 	}
 
@@ -549,7 +556,17 @@ public class Bosqueada extends ApplicationAdapter {
 						colidiu = true;
 						pontos++;
 						somTiroAcerto.play();
-						//municao_quantidade++;
+
+						// sonoplastia pontos
+						if(pontos == 10){
+							cavalo.play();
+						}else if(pontos == 20){
+							nossa.play();
+						}else if(pontos == 50){
+							danca.play();
+						}else if(pontos == 100){
+							irra.play();
+						}
 	
 						// adiciona três novas pedras quando um tiro acerta
 						for (int j = 0; j < 3; j++) {
@@ -567,6 +584,11 @@ public class Bosqueada extends ApplicationAdapter {
 					pedrasNaoAtingidas.add(pedra);
 				}
 
+			}
+
+			// se ela sair da tela, reinicia
+			if(pedra.getY() < 0){
+				pedra.reiniciaPedra();
 			}
 		}
 
@@ -655,15 +677,12 @@ public class Bosqueada extends ApplicationAdapter {
 					// desenha um botao verde
 					batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 900);
 					errou = false;
-					
 					reiniciarJogo();
 				// se estiver errado
 				}else{
-					
 					// desenha um botao vermelho
 					batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 900);
 					errou = true;
-					
 					reiniciarJogo();
 				}
 			}
@@ -687,11 +706,16 @@ public class Bosqueada extends ApplicationAdapter {
 
 		// reinicializacoes que acontecem independente do usuario continuar ou morrer
 
-		// reinicia caixa de municao
-		reiniciarCaixaMunicao = true;
-
 		// faz com que limpaTelaPedras seja chamada
 		limparPedras = true;
+		limpaTelaPedras();
+
+		// despausa e tira o menu
+		pause = false;
+		menu_pergunta = false;
+
+		// reinicia caixa de municao
+		reiniciarCaixaMunicao = true;
 
 		// jaca posicao inicial
 		jacare.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 6 + 20);		
@@ -700,7 +724,6 @@ public class Bosqueada extends ApplicationAdapter {
 		if(errou == false){
 			somAcertouPergunta.play();
 			vida = true;
-			pause = false;
 			municao_quantidade += 15;
 		}
 
@@ -710,9 +733,6 @@ public class Bosqueada extends ApplicationAdapter {
 			// reinicia o jogo
 			menu.setIsJogoIniciado(false);
 			vida = false;
-			pause = false;
-			menu_pergunta = false;
-
 			// pontos e municao reiniciados
 			pontos = 0;
 			municao_quantidade = 30;
@@ -766,13 +786,6 @@ public class Bosqueada extends ApplicationAdapter {
 			return true;
 		}
 
-		// se o tempo que passou é o mesmo da espera da caixa spawna
-		/*if(!caixaSpawnada && caixaVaiSpawnar){
-			tempoSpawnCaixa = tempoSpawnCaixa + MathUtils.random(5, 20);
-			caixaVaiSpawnar = false;
-			
-		}*/
-
 		return false;
 	}
 
@@ -793,6 +806,7 @@ public class Bosqueada extends ApplicationAdapter {
 			if(errou){
 				caixasColetadas = 0;
 			}
+			reiniciarCaixaMunicao = false;
 		}
 
 		// se a caixa nao for coletada, continua desenhada
@@ -827,15 +841,5 @@ public class Bosqueada extends ApplicationAdapter {
 			}
 			
 		}
-
-		/*Iterator<Sprite> iterador_municao = municoes.iterator();
-		while(iterador_municao.hasNext()){
-			Sprite m = iterador_municao.next();
-			if(detectarColisao(jacare, m)){
-				// remove a caixa
-				iterador_municao.remove();
-			}
-		}*/
-
 	}
 }

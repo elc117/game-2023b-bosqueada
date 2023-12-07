@@ -1,6 +1,6 @@
 Qual paradigma de programacao enfatiza a reutilizacao 
-de codigo e a decomposicao de um problema em
-partes menores e mais gerenciaveis?;
+de codigo e a decomposicao de um problema em partes
+ menores e mais gerenciaveis?;
 Procedural;
 Orientado a Objetos;
 Funcional;
@@ -22,20 +22,12 @@ Imperativo;
 a;
 @;
 Qual paradigma de programacao se concentra em decompor 
-um programa em um conjunto de procedimentos 
-ou funcoes, enfatizando a sequencia de passos para alcancar um objetivo?;
+um programa em um conjunto de procedimentos ou funcoes, 
+enfatizando a sequencia de passos para alcancar um objetivo?;
 Procedural;
 Funcional;
 Orientado a Objetos;
 a;
-@;
-Em qual paradigma de programacao as funcoes sao 
-tratadas como valores e podem ser passadas como 
-argumentos e retornadas como resultados de outras funcoes?;
-Logico;
-Funcional;
-Concorrente;
-b;
 @;
 Qual paradigma de programacao se baseia na logica 
 matematica e utiliza regras para inferir respostas 
@@ -54,8 +46,7 @@ Concorrente;
 a;
 @;
 Qual paradigma de programacao se concentra na execucao 
-simultanea de multiplas tarefas ou processos 
-independentes?;
+simultanea de multiplas tarefas ou processos independentes?;
 Logico;
 Funcional;
 Concorrente;
@@ -70,8 +61,8 @@ Funcional;
 a;
 @;
 Em qual paradigma de programacao os programas sao 
-construidos em torno da composicao de funcoes 
-puras e evitam estados compartilhados e efeitos colaterais?;
+construidos em torno da composicao de funcoes puras 
+e evitam estados compartilhados e efeitos colaterais?;
 Logico;
 Orientado a Objetos;
 Funcional;

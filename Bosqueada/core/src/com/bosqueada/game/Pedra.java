@@ -24,11 +24,11 @@ public class Pedra {
 
     // retorna cordenadas da pedra
     public float getX(){
-        return x;
+        return pedra_sprite.getX();
     }
 
     public float getY(){
-        return y;
+        return pedra_sprite.getY();
     }
 
     // pega o sprite pra fazer a colisao
