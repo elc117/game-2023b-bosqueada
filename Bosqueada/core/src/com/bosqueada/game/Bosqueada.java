@@ -735,7 +735,7 @@ public class Bosqueada extends ApplicationAdapter {
     }
 
 	public void reiniciarTempo() {
-		tempoInicial = tempoAtual;
+		tempoInicial = TimeUtils.millis();;
 	}
 
 	public boolean spawnCaixa(){
@@ -793,7 +793,7 @@ public class Bosqueada extends ApplicationAdapter {
 
 		// faz a caixa de municao cair até o chao do jaca
 		if(municao.getY() > Gdx.graphics.getHeight() / 6 + 20 && caixaSpawnada){
-			municao.setY(municao.getY() - 10);
+			municao.setY(municao.getY() - 2);
 			caixaColetada = false;
 		}
 
