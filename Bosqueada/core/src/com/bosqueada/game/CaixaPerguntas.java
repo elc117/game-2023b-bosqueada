@@ -29,6 +29,7 @@ public class CaixaPerguntas {
     private String[] partes;
     private int contador = 0;
     public int questoes_quantidade = 0;
+    private int random_questao;
 
     // posicao da pergunta na tela
     private int posPerguntaX = 20;
@@ -66,7 +67,8 @@ public class CaixaPerguntas {
 
         // quantas questoes sao
         questoes_quantidade = questoesSeparadas.length;
-        int random_questao = MathUtils.random(0, questoes_quantidade-1);
+
+        random_questao = MathUtils.random(0, questoes_quantidade-1);
 
         String questao = questoesSeparadas[random_questao];
 
@@ -82,12 +84,10 @@ public class CaixaPerguntas {
             linha_resposta = partes[5];
         }
         // pega apenas a resposta, para comparar
-        if (linha_resposta.length() >= 2) {
+        if (linha_resposta.length() > 2) {
             resposta = linha_resposta.charAt(2);
-        }else if(linha_resposta.length() >= 1){
+        }else if(linha_resposta.length() <= 2){
             resposta = linha_resposta.charAt(1);
-        }else if(linha_resposta.length() >= 0){
-            resposta = linha_resposta.charAt(0);
         }
     }
 

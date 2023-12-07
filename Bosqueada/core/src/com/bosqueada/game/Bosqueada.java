@@ -77,7 +77,7 @@ public class Bosqueada extends ApplicationAdapter {
     float intervaloSpawnPedra = 2f;
 
 	CaixaPerguntas pergunta;
-
+	boolean leu;
 	boolean arma_virada_esquerda = true;
 	boolean virado_esquerda = true;
 	boolean pause = false;
@@ -200,9 +200,6 @@ public class Bosqueada extends ApplicationAdapter {
             pedras[i] = new Pedra(pedra_textura, x, y, velocidade);
         }
 
-		// le o arquivo
-		pergunta.le_arquivo();
-
 		// tempo entre 5 e 20 ( - caixas coletadas até 10) segundos para o spawn da caixa
 		//tempoSpawnCaixa = MathUtils.random(5, 20 - caixasColetadas);
 
@@ -233,6 +230,10 @@ public class Bosqueada extends ApplicationAdapter {
 
 		// desenha caso nao esteja pausado
 		if(!pause){
+
+			// nao leu ainda
+			leu = false;
+
 			// fundo
 			batch.draw(chao, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			
@@ -365,7 +366,12 @@ public class Bosqueada extends ApplicationAdapter {
 
 		// se estiver pausado, salva o estado atual no buffer
 		}else if(pause && menu_pergunta){
+			if (!leu){
+				// le o arquivo
+				pergunta.le_arquivo();
+			}
 			menuPerguntaLogica(mouseX, mouseY);
+			leu = true;
 		}
 
 		batch.end();
@@ -589,7 +595,8 @@ public class Bosqueada extends ApplicationAdapter {
 	}
 
 	private void menuPerguntaLogica(float mouseX, float mouseY){
-		// fundo pergunta
+			
+			// fundo pergunta
 			// Define a opacidade para 50%
 			batch.setColor(1, 1, 1, 0.5f); 
 			batch.draw(caixaPerguntas_textura, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -748,16 +755,12 @@ public class Bosqueada extends ApplicationAdapter {
     }
 
 	public void reiniciarTempo() {
-		tempoInicial = tempoAtual;
+		tempoInicial = TimeUtils.millis();;
 	}
 
 	public boolean spawnCaixa(){
 
-		System.out.println("t0: " + tempoSpawnCaixa);
-		System.out.println("tempoDecorrido: " + calcularTempoDecorrido());
-
 		if(calcularTempoDecorrido() - tempoSpawnCaixa == 0){ 
-			System.out.println("t1: " + tempoSpawnCaixa);
 			tempoSpawnCaixa += MathUtils.random(5, 20 - caixasColetadas);
 			reiniciarTempo();
 			return true;
