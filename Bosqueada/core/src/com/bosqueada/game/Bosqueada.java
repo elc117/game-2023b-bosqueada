@@ -77,6 +77,7 @@ public class Bosqueada extends ApplicationAdapter {
 	boolean arma_virada_esquerda = true;
 	boolean virado_esquerda = true;
 	boolean pause = false;
+	boolean errou;
 	boolean menu_inicio = false;
 	boolean menu_pergunta = false;
 	boolean armado;
@@ -609,15 +610,13 @@ public class Bosqueada extends ApplicationAdapter {
 				if(pergunta.resposta_correta() == 'a'){
 					// desenha um botao verde
 					batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 500);
-					vida = true;
-					pause = false;
+					errou = false;
 					reiniciarJogo();
 				// se estiver errado
 				}else{
 					// desenha um botao vermelho
 					batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 500);
-					menu.setIsJogoIniciado(false); 
-					vida = false;
+					errou = true;
 					reiniciarJogo();
 				}
 			// segundo botao
@@ -629,15 +628,13 @@ public class Bosqueada extends ApplicationAdapter {
 					if(pergunta.resposta_correta() == 'b'){
 						// desenha um botao verde
 						batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 700);
-						vida = true;
-						pause = false;
+						errou = false;
 						reiniciarJogo();
 					// se estiver errado
 					}else{
 						// desenha um botao vermelho
 						batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 700);
-						menu.setIsJogoIniciado(false);
-						vida = false;
+						errou = true;
 						reiniciarJogo();
 					}
 			// terceiro botao
@@ -649,15 +646,13 @@ public class Bosqueada extends ApplicationAdapter {
 				if(pergunta.resposta_correta() == 'c'){
 					// desenha um botao verde
 					batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 900);
-					vida = true;
-					pause = false;
+					errou = false;
 					reiniciarJogo();
 				// se estiver errado
 				}else{
 					// desenha um botao vermelho
 					batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 900);
-					menu.setIsJogoIniciado(false);
-					vida = false;
+					errou = true;
 					reiniciarJogo();
 				}
 			}
@@ -681,23 +676,29 @@ public class Bosqueada extends ApplicationAdapter {
 
 		// reinicializacoes que acontecem independente do usuario continuar ou morrer
 
+		// faz com que limpaTelaPedras seja chamada
+		limparPedras = true;
+
 		// jaca posicao inicial
 		jacare.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 6 + 20);		
 
-		// respondeu a pergunta errou e morreu
-		if(vida == true){
+		// respondeu a pergunta e sobreviveu
+		if(errou == false){
 			vida = true;
+			pause = false;
 		}
 
-		// respondeu a pergunta e sobreviveu
-		if(vida == false){
+		// respondeu a pergunta e morreu
+		if(errou == true){
+
+			// reinicia o jogo
+			menu.setIsJogoIniciado(false);
+			vida = false;
+			menu_pergunta = false;
 
 			// pontos e municao reiniciados
 			pontos = 0;
 			municao_quantidade = 30;
-
-			// pedras acima da tela
-			limparPedras = true;
 		}
 
 	}
@@ -720,14 +721,12 @@ public class Bosqueada extends ApplicationAdapter {
 
 	public void limpaTelaPedras(){
 		if(limparPedras){
-
-				
-
+			// coloca as pedras para as posicoes de incio
 			for(int i = 0; i < pedras.length; i++){	
 				Pedra pedra = pedras[i];
 				pedra.reiniciaPedra();
 			}
-			// para de limpar as pedras depois de limpa
+			// stop limpar as pedras depois de limpa
 			limparPedras = false;
 		}
 	}
