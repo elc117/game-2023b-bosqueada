@@ -62,6 +62,10 @@ public class Bosqueada extends ApplicationAdapter {
 	private Music musicaMenu;
 
 	private Sound somTiro;
+	private Sound somTiroAcerto;
+	private Sound somAcertouPergunta;
+	private Sound somErrouPergunta;
+	
 
 	BitmapFont fonte_pontos;
 	int pontos = 0;
@@ -83,6 +87,11 @@ public class Bosqueada extends ApplicationAdapter {
 	boolean armado;
 	boolean vida = false;
 	boolean caixaColetada = false;
+	boolean reiniciarCaixaMunicao = false;
+	boolean caixaSpawnada = false;
+	boolean caixaVaiSpawnar = true;
+	int tempoSpawnCaixa = 5;
+	int caixasColetadas = 0;
 
 	Sprite municao;
 	List<Sprite> municoes;
@@ -102,14 +111,23 @@ public class Bosqueada extends ApplicationAdapter {
 	// cores
 	Color babyBlue = new Color(0.678f, 0.847f, 0.902f, 1f);
 	
+	long tempoInicial;
+	long tempoAtual;
+
 	@Override
 	public void create () {
+
+		// pega o tempo desde o comeco da execucao
+		tempoInicial = TimeUtils.millis();
+
 		musicaMenu = Gdx.audio.newMusic(Gdx.files.internal("audio/astronauta.mp3"));
         musicaMenu.setLooping(true); // Para reprodução contínua
         musicaMenu.play();
 
 		somTiro = Gdx.audio.newSound(Gdx.files.internal("audio/somtiro.mp3"));
-
+		somTiroAcerto = Gdx.audio.newSound(Gdx.files.internal("audio/tiro_acerto.wav"));
+		somAcertouPergunta = Gdx.audio.newSound(Gdx.files.internal("audio/yeahbuddy.mp3"));
+		somErrouPergunta = Gdx.audio.newSound(Gdx.files.internal("audio/bruh.mp3"));
 		// cria um menu
 		menu = new Menu();
 
@@ -184,6 +202,9 @@ public class Bosqueada extends ApplicationAdapter {
 
 		// le o arquivo
 		pergunta.le_arquivo();
+
+		// tempo entre 5 e 20 ( - caixas coletadas até 10) segundos para o spawn da caixa
+		//tempoSpawnCaixa = MathUtils.random(5, 20 - caixasColetadas);
 
 	}
 
@@ -270,6 +291,7 @@ public class Bosqueada extends ApplicationAdapter {
 				}
         	}
 
+			// funcao de limpar pedras, caso limparPedras seja true
 			limpaTelaPedras();
 
 			tempoSpawnPedra += Gdx.graphics.getDeltaTime();
@@ -278,36 +300,14 @@ public class Bosqueada extends ApplicationAdapter {
                 tempoSpawnPedra = 0f;
             }
 
+			// botao sair
 			botaoSair(mouseX, mouseY);
 
 			// desenha e atualiza tiro e pedra
 			atualiza();
 			desenha();
 
-			if (!caixaColetada) {
-				municao.draw(batch);
-			}
-
-			// faz a caixa de municao cair até o chao do jaca
-			if(municao.getY() > Gdx.graphics.getHeight() / 6 + 20 && spawnCaixa()){
-				municao.setY(municao.getY() - 1);
-			}
-
-			// faz com que o player possa coletar a municao apenas uma  vez
-			if (!caixaColetada && detectarColisao(jacare, municao)) {
-				// adiciona municao e marca a caixa como coletada
-				municao_quantidade += MathUtils.random(30, 100);
-				caixaColetada = true;
-			}
-
-			Iterator<Sprite> iterador_municao = municoes.iterator();
-			while(iterador_municao.hasNext()){
-				Sprite m = iterador_municao.next();
-				if(detectarColisao(jacare, m)){
-					// remove a caixa
-					iterador_municao.remove();
-				}
-			}	
+			logicaCaixaMunicao();	
 			
 			if(municao_quantidade > 0){
 				armado = true;
@@ -402,7 +402,6 @@ public class Bosqueada extends ApplicationAdapter {
 
 	// movimento do jaca
 	public void moveJacare(){
-
 		boolean caminhando = false;
 
 		// checa se o jacaras passou do ponto pra direita e bota ele na esquerda
@@ -543,6 +542,7 @@ public class Bosqueada extends ApplicationAdapter {
 						tiroIterator.remove();
 						colidiu = true;
 						pontos++;
+						somTiroAcerto.play();
 						//municao_quantidade++;
 	
 						// adiciona três novas pedras quando um tiro acerta
@@ -644,15 +644,19 @@ public class Bosqueada extends ApplicationAdapter {
 				mouseY <= Gdx.graphics.getHeight() - 900 + botao_alternativa.getHeight()){
 				// se estiver certo
 				if(pergunta.resposta_correta() == 'c'){
+					somAcertouPergunta.play();
 					// desenha um botao verde
 					batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 900);
 					errou = false;
+					
 					reiniciarJogo();
 				// se estiver errado
 				}else{
+					
 					// desenha um botao vermelho
 					batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 900);
 					errou = true;
+					
 					reiniciarJogo();
 				}
 			}
@@ -676,6 +680,9 @@ public class Bosqueada extends ApplicationAdapter {
 
 		// reinicializacoes que acontecem independente do usuario continuar ou morrer
 
+		// reinicia caixa de municao
+		reiniciarCaixaMunicao = true;
+
 		// faz com que limpaTelaPedras seja chamada
 		limparPedras = true;
 
@@ -684,13 +691,15 @@ public class Bosqueada extends ApplicationAdapter {
 
 		// respondeu a pergunta e sobreviveu
 		if(errou == false){
+			somAcertouPergunta.play();
 			vida = true;
 			pause = false;
+			municao_quantidade += 15;
 		}
 
 		// respondeu a pergunta e morreu
 		if(errou == true){
-
+			somErrouPergunta.play();
 			// reinicia o jogo
 			menu.setIsJogoIniciado(false);
 			vida = false;
@@ -732,22 +741,34 @@ public class Bosqueada extends ApplicationAdapter {
 		}
 	}
 
-	public long relogio(){
-		long startTime = TimeUtils.millis();
+    public long calcularTempoDecorrido() {
+        tempoAtual = TimeUtils.millis();
+    	long tempoDecorrido = (tempoAtual - tempoInicial) / 1000;
+    	return tempoDecorrido;
+    }
 
-		// tempo em segundos decorrido
-		long tempoDecorrido = startTime/1000;
-
-		return tempoDecorrido;
+	public void reiniciarTempo() {
+		tempoInicial = tempoAtual;
 	}
 
 	public boolean spawnCaixa(){
-		int tempoSpawnCaixa = MathUtils.random(5, 20);
 
-		// se o tempo que passou é o mesmo da espera da caixa spawna
-		if(relogio() - tempoSpawnCaixa <= 0){
+		System.out.println("t0: " + tempoSpawnCaixa);
+		System.out.println("tempoDecorrido: " + calcularTempoDecorrido());
+
+		if(calcularTempoDecorrido() - tempoSpawnCaixa == 0){ 
+			System.out.println("t1: " + tempoSpawnCaixa);
+			tempoSpawnCaixa += MathUtils.random(5, 20 - caixasColetadas);
+			reiniciarTempo();
 			return true;
 		}
+
+		// se o tempo que passou é o mesmo da espera da caixa spawna
+		/*if(!caixaSpawnada && caixaVaiSpawnar){
+			tempoSpawnCaixa = tempoSpawnCaixa + MathUtils.random(5, 20);
+			caixaVaiSpawnar = false;
+			
+		}*/
 
 		return false;
 	}
@@ -757,4 +778,61 @@ public class Bosqueada extends ApplicationAdapter {
 		return pedrasNaoAtingidas;
 	}
 
+	public void logicaCaixaMunicao(){
+
+		// se reiniciar caixa, atua como se estivesse reiniciada
+		if(reiniciarCaixaMunicao){
+			caixaColetada = true;
+			caixaSpawnada = false;
+			municao.setY(Gdx.graphics.getHeight());
+
+			// se errar, reinicia as caixas coletadas
+			if(errou){
+				caixasColetadas = 0;
+			}
+		}
+
+		// se a caixa nao for coletada, continua desenhada
+		if (!caixaColetada) {
+			municao.draw(batch);
+		}
+
+		// caso a caixa nao esteja spawnada, espera dar o tempo para spawnar
+		if(caixaSpawnada == false){
+			municao.setY(Gdx.graphics.getHeight());
+			municao.setX(MathUtils.random(100, Gdx.graphics.getWidth() - 100));
+			caixaSpawnada = spawnCaixa();
+		}
+
+		// faz a caixa de municao cair até o chao do jaca
+		if(municao.getY() > Gdx.graphics.getHeight() / 6 + 20 && caixaSpawnada){
+			municao.setY(municao.getY() - 2);
+			caixaColetada = false;
+		}
+
+		// faz com que o player possa coletar a municao apenas uma  vez
+		if (!caixaColetada && detectarColisao(jacare, municao)) {
+			// adiciona municao e marca a caixa como coletada
+			municao_quantidade += MathUtils.random(20, 30);
+			caixaColetada = true;
+			caixaSpawnada = false;
+			caixaVaiSpawnar = true;
+
+			// conta quantas caixas sao coletadas para diminuir o tempo de drop da caixa
+			if(caixasColetadas <= 10){
+				caixasColetadas++;
+			}
+			
+		}
+
+		/*Iterator<Sprite> iterador_municao = municoes.iterator();
+		while(iterador_municao.hasNext()){
+			Sprite m = iterador_municao.next();
+			if(detectarColisao(jacare, m)){
+				// remove a caixa
+				iterador_municao.remove();
+			}
+		}*/
+
+	}
 }
