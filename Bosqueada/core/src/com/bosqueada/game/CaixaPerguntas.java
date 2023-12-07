@@ -68,7 +68,7 @@ public class CaixaPerguntas {
         // quantas questoes sao
         questoes_quantidade = questoesSeparadas.length;
 
-        randomQuestao();
+        random_questao = MathUtils.random(0, questoes_quantidade-1);
 
         String questao = questoesSeparadas[random_questao];
 
@@ -84,15 +84,11 @@ public class CaixaPerguntas {
             linha_resposta = partes[5];
         }
         // pega apenas a resposta, para comparar
-        if (linha_resposta.length() >= 2) {
+        if (linha_resposta.length() > 2) {
             resposta = linha_resposta.charAt(2);
         }else if(linha_resposta.length() <= 2){
             resposta = linha_resposta.charAt(1);
         }
-    }
-
-    public void randomQuestao(){
-        random_questao = MathUtils.random(0, questoes_quantidade-1);
     }
 
     public char resposta_correta(){
