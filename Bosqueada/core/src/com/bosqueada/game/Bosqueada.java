@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.utils.TimeUtils;
 
 // fontes
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -22,9 +23,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 
-// cronometro
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -34,9 +32,6 @@ import org.w3c.dom.Text;
 
 
 public class Bosqueada extends ApplicationAdapter {
-
-	Timer cronometro;
-	TimerTask tarefa;
 
 	SpriteBatch batch;
 	Texture chao;
@@ -73,6 +68,7 @@ public class Bosqueada extends ApplicationAdapter {
 	
 	// cria o vetor de pedras
 	Pedra[] pedras;
+	boolean limparPedras = false;
 	float tempoSpawnPedra = 0f;
     float intervaloSpawnPedra = 2f;
 
@@ -92,6 +88,7 @@ public class Bosqueada extends ApplicationAdapter {
 	Texture municao_textura;
 	BitmapFont fonte_municao;
 	int municao_quantidade = 30;
+	
 	private boolean teclaAtiraPressionada = false;
 
 	int contador_auxiliar_caminhada = 0;
@@ -134,20 +131,8 @@ public class Bosqueada extends ApplicationAdapter {
 
 		// municao sprite
 		municao = new Sprite(municao_textura);
-
+		municao.setPosition(MathUtils.random(30, Gdx.graphics.getWidth()), Gdx.graphics.getHeight());
 		municoes = new ArrayList<>();
-
-		cronometro = new Timer();
-		tarefa = new TimerTask() {
-			@Override
-			public void run(){
-				municao.setPosition(MathUtils.random(30, Gdx.graphics.getWidth()), Gdx.graphics.getHeight());
-				
-			}
-		};
-		// caixa cai depois de 60 segundos
-		int segundos = MathUtils.random(60, 180);
-		cronometro.schedule(tarefa, segundos);
 
 		// textura do personagem
 		jacare_textura = new Texture("texturas/jacare.png");
@@ -224,11 +209,6 @@ public class Bosqueada extends ApplicationAdapter {
 		// funcao de movimentos do jaca
 		moveJacare();
 
-		if(!vida){
-			menu_pergunta = true;
-			pause = true;
-		}
-
 		// desenha caso nao esteja pausado
 		if(!pause){
 			// fundo
@@ -284,9 +264,12 @@ public class Bosqueada extends ApplicationAdapter {
 				if (detectarColisao(jacare, pedra.getSprite())) {
 					// o que acontece quando colide
 					// nesse caso, reseta a posicao do jaca
-					vida = false;
+					menu_pergunta = true;
+					pause = true;
 				}
         	}
+
+			limpaTelaPedras();
 
 			tempoSpawnPedra += Gdx.graphics.getDeltaTime();
             if (tempoSpawnPedra >= intervaloSpawnPedra) {
@@ -303,17 +286,16 @@ public class Bosqueada extends ApplicationAdapter {
 			if (!caixaColetada) {
 				municao.draw(batch);
 			}
-		
 
 			// faz a caixa de municao cair até o chao do jaca
-			if(municao.getY() > Gdx.graphics.getHeight() / 6 + 20 && pontos > 75){
-				municao.setY(municao.getY()- 1);
+			if(municao.getY() > Gdx.graphics.getHeight() / 6 + 20 && spawnCaixa()){
+				municao.setY(municao.getY() - 1);
 			}
 
 			// faz com que o player possa coletar a municao apenas uma  vez
 			if (!caixaColetada && detectarColisao(jacare, municao)) {
-				//adiciona municao e marca a caixa como coletada
-				municao_quantidade += 10;
+				// adiciona municao e marca a caixa como coletada
+				municao_quantidade += MathUtils.random(30, 100);
 				caixaColetada = true;
 			}
 
@@ -321,8 +303,7 @@ public class Bosqueada extends ApplicationAdapter {
 			while(iterador_municao.hasNext()){
 				Sprite m = iterador_municao.next();
 				if(detectarColisao(jacare, m)){
-						// adiciona municao e remove a caixa
-					municao_quantidade += 1;
+					// remove a caixa
 					iterador_municao.remove();
 				}
 			}	
@@ -416,7 +397,6 @@ public class Bosqueada extends ApplicationAdapter {
 		gerador.dispose();
 		arma_textura.dispose();
 		municao_textura.dispose();
-		
 	}
 
 	// movimento do jaca
@@ -501,12 +481,14 @@ public class Bosqueada extends ApplicationAdapter {
 			if (somTiro != null) {
                 somTiro.play();
             }
+
 			// diminui uma municao por cada disparo
 			if(municao_quantidade > 0){
 				municao_quantidade--;
 			}
 		}
 
+		// faz com que nao de para atirar segurando o botao esquerdo do mouse (metralhar)
 		if (!Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
 			teclaAtiraPressionada = false;
 		}
@@ -543,8 +525,8 @@ public class Bosqueada extends ApplicationAdapter {
 	}
 	
 	private void atualizaPedras() {
-		List<Pedra> pedrasNaoAtingidas = new ArrayList<>();
-	
+		List<Pedra> pedrasNaoAtingidas = criarListaDePedras();
+
 		for (int i = 0; i < pedras.length; i++) {
 			Pedra pedra = pedras[i];
 			if (pedra != null) {
@@ -560,7 +542,7 @@ public class Bosqueada extends ApplicationAdapter {
 						tiroIterator.remove();
 						colidiu = true;
 						pontos++;
-						municao_quantidade++;
+						//municao_quantidade++;
 	
 						// adiciona três novas pedras quando um tiro acerta
 						for (int j = 0; j < 3; j++) {
@@ -573,13 +555,14 @@ public class Bosqueada extends ApplicationAdapter {
 						break;
 					}
 				}
-	
+
 				if (!colidiu) {
 					pedrasNaoAtingidas.add(pedra);
 				}
+
 			}
 		}
-	
+
 		pedras = pedrasNaoAtingidas.toArray(new Pedra[0]);
 	}
 	
@@ -628,11 +611,14 @@ public class Bosqueada extends ApplicationAdapter {
 					batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 500);
 					vida = true;
 					pause = false;
+					reiniciarJogo();
 				// se estiver errado
 				}else{
 					// desenha um botao vermelho
 					batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 500);
 					menu.setIsJogoIniciado(false); 
+					vida = false;
+					reiniciarJogo();
 				}
 			// segundo botao
     		}if(Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
@@ -645,11 +631,14 @@ public class Bosqueada extends ApplicationAdapter {
 						batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 700);
 						vida = true;
 						pause = false;
+						reiniciarJogo();
 					// se estiver errado
 					}else{
 						// desenha um botao vermelho
 						batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 700);
 						menu.setIsJogoIniciado(false);
+						vida = false;
+						reiniciarJogo();
 					}
 			// terceiro botao
 			}if(Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
@@ -662,22 +651,25 @@ public class Bosqueada extends ApplicationAdapter {
 					batch.draw(botao_alternativa_exata, 20 , Gdx.graphics.getHeight() - 900);
 					vida = true;
 					pause = false;
+					reiniciarJogo();
 				// se estiver errado
 				}else{
 					// desenha um botao vermelho
 					batch.draw(botao_alternativa_errada, 20 , Gdx.graphics.getHeight() - 900);
 					menu.setIsJogoIniciado(false);
+					vida = false;
+					reiniciarJogo();
 				}
 			}
 
 			// pergunta
     		pergunta.desenhar(batch);
 
+			// botao sair
 			botaoSair(mouseX, mouseY);
 
 			// inicia o buffer
 			frameBuffer.begin();
-			
 			frameBuffer.end();
 
 			// O que foi desenhado ate este ponto sera salvo no FrameBuffer
@@ -687,12 +679,26 @@ public class Bosqueada extends ApplicationAdapter {
 	// reinicia as variaveis e lógicas do game
 	private void reiniciarJogo(){
 
-		// pontos e municao reiniciados
-		pontos = 0;
-		municao_quantidade = 30;
+		// reinicializacoes que acontecem independente do usuario continuar ou morrer
 
 		// jaca posicao inicial
-		jacare.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 6 + 20);
+		jacare.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 6 + 20);		
+
+		// respondeu a pergunta errou e morreu
+		if(vida == true){
+			vida = true;
+		}
+
+		// respondeu a pergunta e sobreviveu
+		if(vida == false){
+
+			// pontos e municao reiniciados
+			pontos = 0;
+			municao_quantidade = 30;
+
+			// pedras acima da tela
+			limparPedras = true;
+		}
 
 	}
 
@@ -711,4 +717,44 @@ public class Bosqueada extends ApplicationAdapter {
 			Gdx.app.exit(); 
 		}
 	}
+
+	public void limpaTelaPedras(){
+		if(limparPedras){
+
+				
+
+			for(int i = 0; i < pedras.length; i++){	
+				Pedra pedra = pedras[i];
+				pedra.reiniciaPedra();
+			}
+			// para de limpar as pedras depois de limpa
+			limparPedras = false;
+		}
+	}
+
+	public long relogio(){
+		long startTime = TimeUtils.millis();
+
+		// tempo em segundos decorrido
+		long tempoDecorrido = startTime/1000;
+
+		return tempoDecorrido;
+	}
+
+	public boolean spawnCaixa(){
+		int tempoSpawnCaixa = MathUtils.random(5, 20);
+
+		// se o tempo que passou é o mesmo da espera da caixa spawna
+		if(relogio() - tempoSpawnCaixa <= 0){
+			return true;
+		}
+
+		return false;
+	}
+
+	public static List<Pedra> criarListaDePedras(){
+		List<Pedra> pedrasNaoAtingidas = new ArrayList<>();
+		return pedrasNaoAtingidas;
+	}
+
 }

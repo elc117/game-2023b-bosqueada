@@ -82,8 +82,13 @@ public class CaixaPerguntas {
             linha_resposta = partes[5];
         }
         // pega apenas a resposta, para comparar
-        // por que eu peguei o index 2? fui tentiando e deu
-        resposta = linha_resposta.charAt(2);
+        if (linha_resposta.length() >= 2) {
+            resposta = linha_resposta.charAt(2);
+        }else if(linha_resposta.length() >= 1){
+            resposta = linha_resposta.charAt(1);
+        }else if(linha_resposta.length() >= 0){
+            resposta = linha_resposta.charAt(0);
+        }
     }
 
     public char resposta_correta(){
