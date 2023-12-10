@@ -3,7 +3,9 @@
    ## Sobre o Jogo
    Bosqueada é um jogo desenvolvido por Alan Jacobs e Rafael Gatto para a disciplina de Paradigmas de Programação do curso de Ciência da Computação. O jogo é uma espécie de Space Invaders feito em Java com a Libgdx.
 
-   ![Erro ao carregar a imagem](Bosqueada/assets/java_icone.png)
+   <p align="center">
+      <img src="Bosqueada/assets/java_icone.png" alt="!Erro ao carregar a imagem" width="300">
+   </p>
 
    ## Gameplay
    A gameplay funciona da seguinte forma: o jogador controla o Jaca, utilizando as teclas A e D para se movimentar, mira movimentando o mouse e atira com o botao esquerdo do mesmo. 
