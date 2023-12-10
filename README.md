@@ -1,18 +1,15 @@
 # Bosqueada
+-----------
+   ## Sobre o Jogo
+   Bosqueada é um jogo desenvolvido por Alan Jacobs e Rafael Gatto para a disciplina de Paradigmas de Programação do curso de Ciência da Computação. O jogo é uma espécie de Space Invaders feito em Java com a Libgdx.
 
-### Ideia
-   Adicionar perguntas no cenario, caso elas sejam respondidas corretamente o jogador recebe moedas e, com as moedas recebidas, ele podera ir para o proximo cenario, onde tera que enfrentar novas perguntas.
+   ## Gameplay
+   A gameplay funciona da seguinte forma: o jogador controla o Jaca, utilizando as teclas A e D para se movimentar, mira movimentando o mouse e atira com o botao esquerdo do mesmo. 
+   De tempos em tempos, o nosso amigo Jaca recebe um AirDrop de munição para continuar sua luta contra os meteoritos e, caso o nosso guerreiro seja atingido, o jogador terá a chance de salvá-lo acertando uma pergunta sobre Paradigmas de Programação.
+   É importante que você saiba que quanto mais meteoritos você destruir, mais irão surgir, portanto tenha calma, colete o máximo de munição possível antes de começar o massacre! 😈
 
-### Mudamos de Ideia
-   Nossa antiga proposta criava um jogo chato, agora, iremos adicionar o personagem da Bosqueada, o Jaca, ele tera que desviar de meteoritos caidos do ceu e capturar as perguntas. Para ganhar é simples, sobreviva.
-
-### Bosqueada esta de cara nova
-   Com as novas texturas do mano Gatto a Bosqueada ganhou um novo visual, bem mais moderno, gostoso e com cristais roxinhos caindo do ceu.
-
-![Erro ao carregar a imagem](Bosqueada/assets/prints/Screenshot%20(13).png)
-
-### Bosqueada Final Form
-   Um grupo feroz de meteoritos pensa que o nosso amigo Jaca é um dinossauro e estão voltando para acabar com ele! O que eles não sabem é que o Jaca está armado, e ele vai se defender!🐊😎/̵͇̿̿/’̿’̿ ̿ ̿̿ ̿̿ ̿̿💥
+   ## O Jogo
+   Um grupo feroz de meteoritos pensa que o nosso amigo Jaca é um dinossauro e estão voltando para acabar com a vida dele! O que eles não sabem é que o Jaca está armado, e ele vai se defender!🐊😎/̵͇̿̿/’̿’̿ ̿ ̿̿ ̿̿ ̿̿💥
 
 ![Erro ao carregar a imagem](Bosqueada/assets/prints/Screenshot%20(14).png)
 
