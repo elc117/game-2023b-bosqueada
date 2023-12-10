@@ -14,10 +14,10 @@
 
    É importante que você saiba que quanto mais meteoritos você destruir, mais irão surgir, portanto tenha calma e colete o máximo de munição possível antes de começar o massacre! 😈
 
+   ![Erro ao carregar a imagem](Bosqueada/assets/prints/Screenshot%20(14).png)
+
    ## O Jogo
    Um grupo feroz de meteoritos pensa que o nosso amigo Jaca é um dinossauro e estão voltando para acabar com a vida dele! O que eles não sabem é que o Jaca está armado, e ele vai se defender!🐊😎/̵͇̿̿/’̿’̿ ̿ ̿̿ ̿̿ ̿̿💥
-
-![Erro ao carregar a imagem](Bosqueada/assets/prints/Screenshot%20(14).png)
 
 ![Erro ao carregar a imagem](Bosqueada/assets/prints/Screenshot%20(15).png)
 
