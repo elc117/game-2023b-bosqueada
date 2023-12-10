@@ -17,9 +17,9 @@
 
    De tempos em tempos, o nosso amigo Jaca recebe um AirDrop de munição para continuar sua luta contra os meteoritos e, caso o nosso guerreiro seja atingido, o jogador terá a chance de salvá-lo acertando uma pergunta sobre Paradigmas de Programação.
 
-   É importante que você saiba que quanto mais meteoritos você destruir, mais irão surgir, portanto tenha calma e colete o máximo de munição possível antes de começar o massacre! 😈
+   É importante que você saiba que quanto mais meteoritos você destruir, mais irão surgir, portanto, tenha calma e colete o máximo de muniçôes possíveis antes de começar o massacre! 😈
 
    ![Erro ao carregar a imagem](Bosqueada/assets/prints/Screenshot%20(15).png)
 
-   
+
    ![Erro ao carregar a imagem](Bosqueada/assets/prints/Screenshot%20(16).png)
